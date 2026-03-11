@@ -222,5 +222,18 @@
                 "name": "Wambye"
             }
         ]
+    },
+    "Токсики": {
+        "leader_id": 1176837882141474833,
+        "leader_name": "prorok_cold",
+        "location": "Неизвестный сектор",
+        "status": "Активен в зоне",
+        "image": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481422419058102435/30.png?ex=69b341a4&is=69b1f024&hm=df0a431174b61d052271180e5d190c9037eb27735905d4e3d1a04d126131fe90&",
+        "banner": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481422420320719028/30.png?ex=69b341a4&is=69b1f024&hm=e606e5b0b0023354e4a01ea47234cf8b22315280db33c87a978fe4b5498777f8&",
+        "members": [
+            {
+                "name": "prorok_cold"
+            }
+        ]
     }
 }
