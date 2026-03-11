@@ -265,5 +265,18 @@
                 "name": "boez1308"
             }
         ]
+    },
+    "RRR": {
+        "leader_id": 1176837882141474833,
+        "leader_name": "ViceCult",
+        "location": "Неизвестный сектор",
+        "status": "Активен в зоне",
+        "image": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481423480577720330/zelenaia-poviazka.png?ex=69b342a1&is=69b1f121&hm=f73359e9af1c509687d18391b59e0f7e789a4e236243c53768e2b7a4c1736f8a&",
+        "banner": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481423482427412652/ELYSIUM.png?ex=69b342a1&is=69b1f121&hm=636c79d4f2c7266384257923db7d88398f97906ca1a6ee6b2d63f5ad9623645c&",
+        "members": [
+            {
+                "name": "ViceCult"
+            }
+        ]
     }
 }
