@@ -508,5 +508,18 @@
                 "name": "wharfs_88_reviva"
             }
         ]
+    },
+    "ГУЛАГ": {
+        "leader_id": 1176837882141474833,
+        "leader_name": "orel-krutoi777",
+        "location": "Неизвестный сектор",
+        "status": "Активен в зоне",
+        "image": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481429213503422637/28.png?ex=69b347f8&is=69b1f678&hm=eba1e31b7b20eb85c1d2f50de4476dc20d7ec773b63438db883e5a09cb07a1e5&",
+        "banner": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481429214971433100/ELYSIUM.png?ex=69b347f8&is=69b1f678&hm=1dfbe3ea0ca5ae5cf08ebf33a54103bebccff58cc9c47f9ecb84892b2a6d4c0b&",
+        "members": [
+            {
+                "name": "orel-krutoi777"
+            }
+        ]
     }
 }
