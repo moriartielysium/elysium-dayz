@@ -108,5 +108,18 @@
                 "name": "Sancio-Pancios"
             }
         ]
+    },
+    "Самурай": {
+        "leader_id": 1176837882141474833,
+        "leader_name": "t1ramisuka",
+        "location": "Неизвестный сектор",
+        "status": "Активен в зоне",
+        "image": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481418822660653057/red-poviazka.png?ex=69b33e4a&is=69b1ecca&hm=fecdc3218580f688d2a6f5d01b2f51094f94b4421153f60d4fe65bcd6c31f52c&",
+        "banner": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481418824053035088/IMG_8518-Photoroom.png?ex=69b33e4b&is=69b1eccb&hm=e8cfec4f259587e6ce738cf7524c21a27d2a1c3e8ec69606d42079b836f744dc&",
+        "members": [
+            {
+                "name": "t1ramisuka"
+            }
+        ]
     }
 }
