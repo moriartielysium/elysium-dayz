@@ -11,5 +11,18 @@
                 "name": "Брусника"
             }
         ]
+    },
+    "123": {
+        "leader_id": 1176837882141474833,
+        "leader_name": "123",
+        "location": "Неизвестный сектор",
+        "status": "Активен в зоне",
+        "image": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481406768868360336/17.png?ex=69b33310&is=69b1e190&hm=c3cd3b789af717e3ca035dd4bf5c7cac8c19d3f7d217853e9ff8ec5e70eeee6b&",
+        "banner": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481406770567188571/22.png?ex=69b33311&is=69b1e191&hm=ad30710a53e0be16543c3c8125fa6d34ceff49d4a829f750091ac90c87c0afcf&",
+        "members": [
+            {
+                "name": "123"
+            }
+        ]
     }
 }
