@@ -79,5 +79,18 @@
                 "name": "modern_winter84"
             }
         ]
+    },
+    "Морские шпротики": {
+        "leader_id": 1176837882141474833,
+        "leader_name": "VladisY86",
+        "location": "Неизвестный сектор",
+        "status": "Активен в зоне",
+        "image": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481417668723474625/sineia-poviazka.png?ex=69b33d37&is=69b1ebb7&hm=29472e00ab171458585c6fc5f0553a54acbd17fd2b8d2143c160e43df0ba3224&",
+        "banner": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481417670174707852/ELYSIUM.png?ex=69b33d37&is=69b1ebb7&hm=0292aa88168c71509d70e0807d34e0b52e4cadcedf22f54431c6654834e28a83&",
+        "members": [
+            {
+                "name": "VladisY86"
+            }
+        ]
     }
 }
