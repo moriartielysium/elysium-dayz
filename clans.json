@@ -1,22 +1,4 @@
 {
-    "TEST CLAN": {
-        "leader": 1176837882141474833,
-        "leader_name": "mr_Moriartii",
-        "location": "Неизвестный сектор",
-        "status": "Активен в зоне",
-        "members": [
-            {
-                "id": 1176837882141474833,
-                "name": "mr_Moriartii"
-            },
-            {
-                "id": 1032759401880227951,
-                "name": "Luisianna"
-            }
-        ],
-        "banner": "./images/clans/belaia-poviazka.png",
-        "image": "https://i.postimg.cc/xjwNfw1C/zelenaia-poviazka.png"
-    },
     "АДСКИЙ ПСЫ": {
         "leader": 1176837882141474833,
         "leader_name": "mr_Moriartii",
