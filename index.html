@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DayZ Clan Panel</title>
+
+<style>
+:root{
+--bg:#0b0d0b;
+--panel:rgba(18,21,17,0.88);
+--panel-2:rgba(28,31,26,0.92);
+--text:#e8e2cf;
+--muted:#b5ad94;
+--accent:#6f8f3b;
+--accent-2:#556b2f;
+--line:#2a2e25;
+}
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:Arial, sans-serif;
+color:var(--text);
+background:
+linear-gradient(rgba(8,10,8,0.7), rgba(8,10,8,0.92)),
+url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80");
+background-size:cover;
+background-attachment:fixed;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:40px 20px;
+}
+
+.hero{
+text-align:center;
+padding:30px 0 20px;
+}
+
+.hero h1{
+margin:0 0 10px;
+font-size:56px;
+text-transform:uppercase;
+letter-spacing:2px;
+}
+
+.subtitle{
+color:var(--muted);
+font-size:18px;
+margin-bottom:30px;
+}
+
+.topbar{
+display:flex;
+justify-content:center;
+gap:12px;
+flex-wrap:wrap;
+margin-bottom:30px;
+}
+
+.topbar input{
+padding:12px 14px;
+min-width:280px;
+border-radius:10px;
+border:1px solid var(--line);
+background:#131612;
+color:var(--text);
+outline:none;
+}
+
+.topbar button{
+background:linear-gradient(180deg,var(--accent),var(--accent-2));
+color:white;
+border:none;
+padding:12px 18px;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.topbar button:hover{
+filter:brightness(1.08);
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:18px;
+margin-bottom:30px;
+}
+
+.stat{
+background:var(--panel);
+border:1px solid var(--line);
+padding:18px;
+border-radius:14px;
+text-align:center;
+box-shadow:0 8px 24px rgba(0,0,0,0.3);
+}
+
+.stat strong{
+display:block;
+font-size:30px;
+margin-bottom:6px;
+}
+
+.layout{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:20px;
+align-items:start;
+}
+
+.clans-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:18px;
+}
+
+.card{
+background:var(--panel);
+border:1px solid var(--line);
+border-radius:16px;
+padding:20px;
+box-shadow:0 10px 28px rgba(0,0,0,0.28);
+}
+
+.clan-card{
+position:relative;
+overflow:hidden;
+}
+
+.clan-card::after{
+content:"";
+position:absolute;
+right:-25px;
+bottom:-25px;
+width:120px;
+height:120px;
+border-radius:50%;
+background:radial-gradient(circle, rgba(111,143,59,0.18), transparent 70%);
+}
+
+.badge{
+display:inline-block;
+font-size:11px;
+text-transform:uppercase;
+letter-spacing:1px;
+padding:6px 10px;
+border-radius:999px;
+border:1px solid var(--line);
+background:#1c1f1a;
+color:var(--muted);
+margin-bottom:12px;
+}
+
+.clan-head{
+display:flex;
+justify-content:space-between;
+gap:10px;
+align-items:flex-start;
+margin-bottom:10px;
+}
+
+.clan-name{
+font-size:28px;
+margin:0;
+text-transform:uppercase;
+}
+
+.rank{
+background:#22261f;
+padding:6px 10px;
+border-radius:8px;
+font-size:12px;
+color:var(--muted);
+}
+
+.meta{
+color:var(--muted);
+line-height:1.7;
+margin-bottom:14px;
+}
+
+.members-title,
+.sidebar-title{
+font-size:14px;
+text-transform:uppercase;
+letter-spacing:1px;
+margin-bottom:10px;
+color:#d7cfb3;
+}
+
+.members-list{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+}
+
+.member{
+background:#22261f;
+padding:7px 10px;
+border-radius:8px;
+font-size:13px;
+}
+
+.sidebar{
+display:grid;
+gap:18px;
+}
+
+.side-item{
+background:#22261f;
+padding:12px;
+border-radius:10px;
+line-height:1.5;
+color:var(--muted);
+}
+
+.side-item strong{
+color:var(--text);
+}
+
+.empty{
+text-align:center;
+color:var(--muted);
+padding:30px 20px;
+}
+
+footer{
+text-align:center;
+margin-top:35px;
+color:#8e876e;
+font-size:14px;
+}
+
+@media (max-width: 900px){
+.layout{
+grid-template-columns:1fr;
+}
+.hero h1{
+font-size:42px;
+}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="hero">
+<h1>DayZ Clans</h1>
+<div class="subtitle">Панель кланов сервера в суровом стиле выживания</div>
+</div>
+
+<div class="topbar">
+<input id="searchInput" type="text" placeholder="Поиск клана...">
+<button onclick="loadClans()">Обновить</button>
+</div>
+
+<div class="stats">
+<div class="stat">
+<strong id="clanCount">0</strong>
+Кланов
+</div>
+
+<div class="stat">
+<strong id="memberCount">0</strong>
+Игроков
+</div>
+
+<div class="stat">
+<strong id="topClan">—</strong>
+Топ клан
+</div>
+
+<div class="stat">
+<strong id="apiStatus">OFFLINE</strong>
+Статус API
+</div>
+</div>
+
+<div class="layout">
+<div>
+<div class="clans-grid" id="clansGrid"></div>
+</div>
+
+<div class="sidebar">
+<div class="card">
+<div class="sidebar-title">Топ кланы</div>
+<div id="topClansList"></div>
+</div>
+
+<div class="card">
+<div class="sidebar-title">Территории</div>
+<div id="territoriesList"></div>
+</div>
+</div>
+</div>
+
+<footer>
+DayZ Clan Panel
+</footer>
+
+</div>
+
+<script>
+let allClans = {};
+
+function renderClans(data){
+const grid = document.getElementById("clansGrid");
+const topClansList = document.getElementById("topClansList");
+const territoriesList = document.getElementById("territoriesList");
+const clanCount = document.getElementById("clanCount");
+const memberCount = document.getElementById("memberCount");
+const topClan = document.getElementById("topClan");
+
+const search = document.getElementById("searchInput").value.toLowerCase();
+
+grid.innerHTML = "";
+topClansList.innerHTML = "";
+territoriesList.innerHTML = "";
+
+const entries = Object.entries(data).filter(([name]) =>
+name.toLowerCase().includes(search)
+);
+
+const sorted = [...entries].sort((a, b) =>
+(b[1].members?.length || 0) - (a[1].members?.length || 0)
+);
+
+clanCount.innerText = sorted.length;
+memberCount.innerText = sorted.reduce((sum, [, clan]) => sum + (clan.members?.length || 0), 0);
+topClan.innerText = sorted[0] ? sorted[0][0] : "—";
+
+if(sorted.length === 0){
+grid.innerHTML = `<div class="card empty">Кланы не найдены</div>`;
+return;
+}
+
+sorted.forEach(([name, clan], index) => {
+const members = Array.isArray(clan.members) ? clan.members : [];
+const membersHTML = members.length
+? members.map(m => `<span class="member">${m.name || "Без имени"}</span>`).join("")
+: `<span class="member">Нет участников</span>`;
+
+const card = document.createElement("div");
+card.className = "card clan-card";
+
+card.innerHTML = `
+<div class="badge">${clan.location || "Неизвестный сектор"}</div>
+
+<div class="clan-head">
+<h2 class="clan-name">${name}</h2>
+<div class="rank">#${index + 1}</div>
+</div>
+
+<div class="meta">
+<strong>Лидер:</strong> ${clan.leader_name || "Неизвестно"}<br>
+<strong>Статус:</strong> ${clan.status || "Активен"}<br>
+<strong>Участников:</strong> ${members.length}<br>
+<strong>Сила клана:</strong> ${members.length * 10}
+</div>
+
+<div class="members-title">Состав</div>
+<div class="members-list">${membersHTML}</div>
+`;
+
+grid.appendChild(card);
+});
+
+sorted.slice(0, 5).forEach(([name, clan], index) => {
+const div = document.createElement("div");
+div.className = "side-item";
+div.innerHTML = `<strong>#${index + 1} ${name}</strong><br>${clan.members?.length || 0} участников`;
+topClansList.appendChild(div);
+});
+
+sorted.forEach(([name, clan]) => {
+const div = document.createElement("div");
+div.className = "side-item";
+div.innerHTML = `<strong>${clan.location || "Неизвестно"}</strong><br>${name}`;
+territoriesList.appendChild(div);
+});
+}
+
+async function loadClans(){
+const apiStatus = document.getElementById("apiStatus");
+apiStatus.innerText = "LOADING";
+
+try{
+const response = await fetch("/api/clans");
+if(!response.ok){
+throw new Error("API error");
+}
+
+allClans = await response.json();
+renderClans(allClans);
+apiStatus.innerText = "ONLINE";
+}catch(error){
+document.getElementById("clansGrid").innerHTML = `<div class="card empty">Ошибка загрузки данных</div>`;
+document.getElementById("topClansList").innerHTML = "";
+document.getElementById("territoriesList").innerHTML = "";
+document.getElementById("clanCount").innerText = "0";
+document.getElementById("memberCount").innerText = "0";
+document.getElementById("topClan").innerText = "—";
+apiStatus.innerText = "ERROR";
+}
+}
+
+document.getElementById("searchInput").addEventListener("input", () => {
+renderClans(allClans);
+});
+
+loadClans();
+setInterval(loadClans, 10000);
+</script>
+
+</body>
+</html>
