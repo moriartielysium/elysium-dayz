@@ -194,5 +194,18 @@
                 "name": "Esperanza_909"
             }
         ]
+    },
+    "Н.Бабочки на Паранойе": {
+        "leader_id": 1176837882141474833,
+        "leader_name": "Twixinkaa",
+        "location": "Неизвестный сектор",
+        "status": "Активен в зоне",
+        "image": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481421842538434670/rozovaia-poviazka.png?ex=69b3411a&is=69b1ef9a&hm=0a1db8fb703675d2e0e6e7fa62125e3a0ea8d3805afe3251a94ae5537e200caa&",
+        "banner": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481421844480524348/ff6b3d8f-1f5c-4774-bf52-b2c31997ad5a.png?ex=69b3411b&is=69b1ef9b&hm=703cb12a72f3bfaa333258e7a3c94cdac304844a4a631d0f98c37c8bd2889279&",
+        "members": [
+            {
+                "name": "Twixinkaa"
+            }
+        ]
     }
 }
