@@ -105,7 +105,7 @@
 
     .stats {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 14px;
       margin: 14px 0 28px;
     }
@@ -317,7 +317,7 @@
 
     @media (max-width: 760px) {
       .stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr;
       }
 
       .clan-banner {
@@ -326,10 +326,6 @@
     }
 
     @media (max-width: 520px) {
-      .stats {
-        grid-template-columns: 1fr;
-      }
-
       .clan-head {
         flex-direction: column;
         align-items: flex-start;
@@ -379,10 +375,6 @@
         <span>Игроков</span>
       </div>
       <div class="stat">
-        <strong id="topClan">—</strong>
-        <span>Топ клан</span>
-      </div>
-      <div class="stat">
         <strong id="statusText">OFFLINE</strong>
         <span>Статус данных</span>
       </div>
@@ -395,7 +387,7 @@
 
       <aside class="sidebar">
         <div class="card">
-          <div class="side-title">Топ кланы</div>
+          <div class="side-title">Список кланов</div>
           <div id="topClansList"></div>
         </div>
 
@@ -447,14 +439,13 @@
         (sum, [, clan]) => sum + (clan.members?.length || 0),
         0
       );
-      document.getElementById("topClan").textContent = sorted[0]?.[0] || "—";
 
       if (!sorted.length) {
         clansGrid.innerHTML = `<div class="card empty">Кланы не найдены</div>`;
         return;
       }
 
-      sorted.forEach(([name, clan], index) => {
+      sorted.forEach(([name, clan]) => {
         const members = Array.isArray(clan.members) ? clan.members : [];
 
         const membersHtml = members.length
@@ -485,7 +476,6 @@
                 ${imageHtml}
                 <h2 class="clan-name">${escapeHtml(name)}</h2>
               </div>
-              <div class="rank">#${index + 1}</div>
             </div>
             <div class="meta">
               <div><strong>Лидер:</strong> ${escapeHtml(clan.leader_name || "Неизвестно")}</div>
@@ -500,10 +490,10 @@
         clansGrid.appendChild(card);
       });
 
-      sorted.slice(0, 5).forEach(([name, clan], index) => {
+      sorted.forEach(([name, clan]) => {
         const item = document.createElement("div");
         item.className = "side-item";
-        item.innerHTML = `<strong>#${index + 1} ${escapeHtml(name)}</strong><br>${clan.members?.length || 0} участников`;
+        item.innerHTML = `<strong>${escapeHtml(name)}</strong><br>${clan.members?.length || 0} участников`;
         topClansList.appendChild(item);
       });
 
@@ -535,7 +525,6 @@
         document.getElementById("territoriesList").innerHTML = "";
         document.getElementById("clanCount").textContent = "0";
         document.getElementById("memberCount").textContent = "0";
-        document.getElementById("topClan").textContent = "—";
         statusText.textContent = "ERROR";
         console.error(error);
       }
