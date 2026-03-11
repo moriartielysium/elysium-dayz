@@ -400,5 +400,18 @@
                 "name": "ridged-rundown48"
             }
         ]
+    },
+    "1-й ливоньевский полк": {
+        "leader_id": 1176837882141474833,
+        "leader_name": "edinle_natter",
+        "location": "Неизвестный сектор",
+        "status": "Активен в зоне",
+        "image": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481426965863862412/17.png?ex=69b345e0&is=69b1f460&hm=fe2cd9b6c323ecd4e84de59c8212ec71c243545bc72733c188a299c4744869c8&",
+        "banner": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481426967545909258/OXGLUkb1d4NCwhgy5G1ngA-ED0c4nwt4ztufpxJe2N6xNa2tSBHSw347n3MQwgkjbz_le3I-lmzQQgNH7JCchPyj.jpg?ex=69b345e0&is=69b1f460&hm=8e9a3e5dd3226e13ac5ac97231aa1fad149c1b620981966935fdd82053dac5fb&",
+        "members": [
+            {
+                "name": "edinle_natter"
+            }
+        ]
     }
 }
