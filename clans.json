@@ -154,5 +154,18 @@
                 "name": "veGass3"
             }
         ]
+    },
+    "ХОМЯКИ": {
+        "leader_id": 1176837882141474833,
+        "leader_name": "I_TIPOK_I_",
+        "location": "Неизвестный сектор",
+        "status": "Активен в зоне",
+        "image": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481420475832996012/zheltaia-poviazka.png?ex=69b33fd4&is=69b1ee54&hm=20814ba8ae05cdd4f89f5608515afcd8801f2e4cb4b5c1ca191db32dd4976442&",
+        "banner": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481420477414244554/IMG231323141_898.jpg?ex=69b33fd5&is=69b1ee55&hm=5ab1bdf9fc6798bba7a0fd743bf62fda0cb02a13ebcea9be6b802ebb0a539f4f&",
+        "members": [
+            {
+                "name": "I_TIPOK_I_"
+            }
+        ]
     }
 }
