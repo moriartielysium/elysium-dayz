@@ -24,5 +24,18 @@
                 "name": "123"
             }
         ]
+    },
+    "Bulletproof Drip": {
+        "leader_id": 1176837882141474833,
+        "leader_name": "wnxTomMarvolo",
+        "location": "Неизвестный сектор",
+        "status": "Активен в зоне",
+        "image": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481414683662483538/belaia-poviazka.png?ex=69b33a6f&is=69b1e8ef&hm=75792d9118ca73fc1c1dfd006c5ec9d53b64f95810618fcca9532baf9b644f4d&",
+        "banner": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481414684983693373/IMG_2610.jpg?ex=69b33a70&is=69b1e8f0&hm=888df0212f1a72afc890b57f80d119567cf0a4cb327060fd9633ac9eb3b7c280&",
+        "members": [
+            {
+                "name": "wnxTomMarvolo"
+            }
+        ]
     }
 }
