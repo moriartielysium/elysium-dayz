@@ -539,5 +539,18 @@
                 "name": "Nelzor3191"
             }
         ]
+    },
+    "Shadow of a doll": {
+        "leader_id": 1176837882141474833,
+        "leader_name": "MOCKBA29",
+        "location": "Неизвестный сектор",
+        "status": "Активен в зоне",
+        "image": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481440647482183860/orange-poviazka.png?ex=69b3529e&is=69b2011e&hm=2752643a61a91390cb488b619fafe5bcea266818cc4ced4b92aca7b38b56eeaa&",
+        "banner": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481440649520873762/IMG_6402_1.png?ex=69b3529e&is=69b2011e&hm=43cac9ca590933b3d160d90a4e97e45f02eaaf6b764f7c280e24e9cfc699880d&",
+        "members": [
+            {
+                "name": "MOCKBA29"
+            }
+        ]
     }
 }
