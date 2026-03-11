@@ -471,5 +471,18 @@
                 "name": "ROM-GT789"
             }
         ]
+    },
+    "«Викинг»": {
+        "leader_id": 1176837882141474833,
+        "leader_name": "Cpt_MacMillan_Ua",
+        "location": "Неизвестный сектор",
+        "status": "Активен в зоне",
+        "image": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481428573897097388/10.png?ex=69b3475f&is=69b1f5df&hm=d3611e5079d5badf0ff4f747d80370842dadf119c5efbfc62fdab31fc160544b&",
+        "banner": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481428575084351571/7460C9FD-E5C6-4A22-94F2-67D1B2B39CFD.jpg?ex=69b3475f&is=69b1f5df&hm=37c1b04c3fea34e757e6dc4fc165bff04e529efb522f7dfa2f928450e83179a2&",
+        "members": [
+            {
+                "name": "Cpt_MacMillan_Ua"
+            }
+        ]
     }
 }
