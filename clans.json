@@ -1,18 +1,4 @@
 {
-    "TEST 2": {
-        "leader": 1176837882141474833,
-        "leader_name": "mr_Moriartii",
-        "location": "Неизвестный сектор",
-        "status": "Активен в зоне",
-        "image": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481400415588319282/rozovaia-poviazka.png?ex=69b32d26&is=69b1dba6&hm=c0aecd6dbdd9ae0d25ac823a4a9f0aec065f8be6279e3d3443b70f8e55c155a9&",
-        "banner": "",
-        "members": [
-            {
-                "id": 1176837882141474833,
-                "name": "mr_Moriartii"
-            }
-        ]
-    },
     "TEST 3": {
         "leader": 1176837882141474833,
         "leader_name": "mr_Moriartii",
