@@ -354,5 +354,18 @@
                 "name": "RoverA63"
             }
         ]
+    },
+    "69-Й БДСМ": {
+        "leader_id": 1176837882141474833,
+        "leader_name": "Jasha13",
+        "location": "Неизвестный сектор",
+        "status": "Активен в зоне",
+        "image": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481425904545824968/5.png?ex=69b344e3&is=69b1f363&hm=ce457829795bef3d1252df945897df18fdc10ceb9686f3df4abfca1ca875a6be&",
+        "banner": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481425906005180608/ChatGPT_Image_29_._2026_._22_21_55.png?ex=69b344e3&is=69b1f363&hm=8ba77313d2d8aace9c40446910b3286cc184fac2ed35cb9e0441692bf6dcdd4b&",
+        "members": [
+            {
+                "name": "Jasha13"
+            }
+        ]
     }
 }
