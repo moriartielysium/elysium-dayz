@@ -1,17 +1,4 @@
 {
-    "СОЛНЦЕВСКИЕ": {
-        "leader_id": 1176837882141474833,
-        "leader_name": "Брусника",
-        "location": "Неизвестный сектор",
-        "status": "Активен в зоне",
-        "image": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481404923399897179/30.png?ex=69b33158&is=69b1dfd8&hm=ec2713477ca45ecf8cb6908f737e6b8e13669712fb188acadda2dcf9d6a3e108&",
-        "banner": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481404924272054292/1.png?ex=69b33159&is=69b1dfd9&hm=b99e6d3cfab629c7967e817283455f819eba997eacf4780baca9f07459296782&",
-        "members": [
-            {
-                "name": "Брусника"
-            }
-        ]
-    },
     "Bulletproof Drip": {
         "leader_id": 1176837882141474833,
         "leader_name": "wnxTomMarvolo",
