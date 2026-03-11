@@ -54,5 +54,19 @@
                 "name": "mr_Moriartii"
             }
         ]
+    },
+    "TEST 3": {
+        "leader": 1176837882141474833,
+        "leader_name": "mr_Moriartii",
+        "location": "Неизвестный сектор",
+        "status": "Активен в зоне",
+        "image": "",
+        "banner": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481401896421036152/1.png?ex=69b32e87&is=69b1dd07&hm=5ed6223e6bb23f8326cbaf41bb07fca3f7a248c3e751db3dc620429728179442&",
+        "members": [
+            {
+                "id": 1176837882141474833,
+                "name": "mr_Moriartii"
+            }
+        ]
     }
 }
