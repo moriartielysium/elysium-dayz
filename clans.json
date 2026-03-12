@@ -597,5 +597,18 @@
                 "name": "RomaN_161_"
             }
         ]
+    },
+    "Чистое Небо": {
+        "leader_id": 1176837882141474833,
+        "leader_name": "Mansory_102",
+        "location": "Неизвестный сектор",
+        "status": "Активен в зоне",
+        "image": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481798115517403328/24.png?ex=69b49f89&is=69b34e09&hm=9d0bb1e42b54781bfee04c518615539cd458d5462fb32be880a4538402265320&",
+        "banner": "https://cdn.discordapp.com/ephemeral-attachments/1481079994166935622/1481798116503195750/ELYSIUM.png?ex=69b49f89&is=69b34e09&hm=8a15b082d4b9439e160163efda4aaabdea88e1c80b3ffa34503fe1ca413ceee9&",
+        "members": [
+            {
+                "name": "Mansory_102"
+            }
+        ]
     }
 }
