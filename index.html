@@ -37,6 +37,35 @@
       padding: 28px 0 48px;
     }
 
+    .nav {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      padding: 10px 18px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      color: #f5f1e4;
+      background: linear-gradient(180deg, #7f9256, #56643a);
+      border: 1px solid rgba(180, 170, 130, 0.18);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+
+    .nav-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .nav-btn.active {
+      background: linear-gradient(180deg, #a5b86e, #6f7f4a);
+    }
+
     .hero {
       text-align: center;
       padding: 30px 0 18px;
@@ -352,6 +381,11 @@
 </head>
 <body>
   <main class="container">
+    <nav class="nav">
+      <a href="index.html" class="nav-btn active">Кланы</a>
+      <a href="map.html" class="nav-btn">Карта территорий</a>
+    </nav>
+
     <section class="hero">
       <div class="eyebrow">Elysium DayZ • clan panel</div>
       <h1>ELYSIUM</h1>
@@ -539,3 +573,5 @@
   </script>
 </body>
 </html>
+</html>
+
