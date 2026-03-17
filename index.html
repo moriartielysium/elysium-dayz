@@ -542,7 +542,7 @@
       });
     }
 
-    async function loadClans() {
+async function loadClans() {
   try {
     const url = `https://raw.githubusercontent.com/moriartielysium/elysium-dayz-data/main/clans.json?t=${Date.now()}`;
 
@@ -551,22 +551,41 @@
     });
 
     if (!response.ok) {
-      document.getElementById("statusText").textContent = "ERROR";
-      return;
+      throw new Error("HTTP error " + response.status);
     }
 
-    const data = await response.json();
+    const text = await response.text();
+
+    // защита от пустого ответа
+    if (!text || text.trim() === "") {
+      throw new Error("Пустой JSON");
+    }
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error("Ошибка парсинга JSON");
+    }
+
+    if (!data || typeof data !== "object") {
+      throw new Error("Неверный формат данных");
+    }
 
     renderClans(data);
 
-    // ✅ статус онлайн
-    document.getElementById("statusText").textContent = "ONLINE";
+    // 🟢 ONLINE
+    const status = document.getElementById("statusText");
+    status.textContent = "ONLINE";
+    status.style.color = "#4CAF50";
 
   } catch (e) {
     console.error("Ошибка загрузки кланов:", e);
 
-    // ❌ статус ошибка
-    document.getElementById("statusText").textContent = "OFFLINE";
+    // 🔴 OFFLINE
+    const status = document.getElementById("statusText");
+    status.textContent = "OFFLINE";
+    status.style.color = "#ff4d4d";
   }
 }
   </script>
