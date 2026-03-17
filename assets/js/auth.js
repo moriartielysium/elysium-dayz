@@ -1,9 +1,13 @@
 async function requireAuth() {
-  try {
-    const me = await apiGet("/api/me");
-    return me.user;
-  } catch {
-    window.location.href = "/";
-    return null;
+  const response = await fetch("/api/me", {
+    credentials: "include"
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(data.error || `Auth failed: ${response.status}`);
   }
+
+  return data.user;
 }
