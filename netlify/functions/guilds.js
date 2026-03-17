@@ -2,6 +2,7 @@ const { getSession } = require("./_lib/session");
 const { getUserGuilds } = require("./_lib/discord");
 const { ok, unauthorized, serverError } = require("./_lib/response");
 const { hasManageAccess } = require("./_lib/permissions");
+const { isSuperAdmin } = require("./_lib/admin");
 
 exports.handler = async (event) => {
   try {
@@ -16,18 +17,22 @@ exports.handler = async (event) => {
 
     const userGuilds = await getUserGuilds(session.accessToken);
 
-    const guilds = userGuilds
+    let guilds = userGuilds
       .filter((guild) => hasManageAccess(guild.permissions))
       .map((guild) => ({
         id: guild.id,
         name: guild.name,
         icon: guild.icon,
         hasBot: null,
-        canManage: true
+        canManage: true,
+        source: "user"
       }));
+
+    const superAdmin = isSuperAdmin(session.user.id);
 
     return ok({
       ok: true,
+      isSuperAdmin: superAdmin,
       guilds
     });
   } catch (error) {
