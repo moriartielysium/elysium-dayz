@@ -550,19 +550,25 @@
       cache: "no-store"
     });
 
+    if (!response.ok) {
+      document.getElementById("statusText").textContent = "ERROR";
+      return;
+    }
+
     const data = await response.json();
 
     renderClans(data);
+
+    // ✅ статус онлайн
+    document.getElementById("statusText").textContent = "ONLINE";
+
   } catch (e) {
     console.error("Ошибка загрузки кланов:", e);
+
+    // ❌ статус ошибка
+    document.getElementById("statusText").textContent = "OFFLINE";
   }
 }
-
-// первый запуск
-loadClans();
-
-// автообновление
-setInterval(loadClans, 10000);
   </script>
 </body>
 </html>
