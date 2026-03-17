@@ -17,7 +17,9 @@
         <div class="muted">Guild ID: ${guild.id}</div>
         <div style="margin-top:10px;">
           <span class="badge">${guild.canManage ? "Manage Access" : "No Access"}</span>
-          <span class="badge">${guild.hasBot ? "Bot Added" : "Bot Missing"}</span>
+<span class="badge">${
+  guild.hasBot === null ? "Bot Status Unknown" : guild.hasBot ? "Bot Added" : "Bot Missing"
+}</span>
         </div>
         <div class="guild-actions"><a class="btn" href="/guild.html?id=${encodeURIComponent(guild.id)}">Open</a></div>
       </div>`).join("");
