@@ -6,18 +6,18 @@
     meBox.textContent = "Проверка авторизации...";
 
     const user = await requireAuth();
-    meBox.textContent = `Вы вошли как ${user.username} (${user.id})`;
+    const guildData = await apiGet("/api/guilds");
+    const guilds = guildData.guilds || [];
 
-    guildsBox.innerHTML = `<div class="card">Загрузка серверов...</div>`;
-
-    const data = await apiGet("/api/guilds");
-    const guilds = data.guilds || [];
+    meBox.textContent =
+      `Вы вошли как ${user.username} (${user.id})` +
+      (user.isSuperAdmin ? " • Super Admin" : " • User");
 
     if (!guilds.length) {
       guildsBox.innerHTML = `
         <div class="card">
           <h3>Серверы не найдены</h3>
-          <div class="muted">API работает, но список серверов пустой.</div>
+          <div class="muted">Список серверов пуст.</div>
         </div>
       `;
       return;
@@ -32,6 +32,7 @@
           <span class="badge">${
             guild.hasBot === null ? "Bot Status Unknown" : guild.hasBot ? "Bot Added" : "Bot Missing"
           }</span>
+          <span class="badge">${guild.source === "user" ? "Your Guild" : "Bot Guild"}</span>
         </div>
         <div class="guild-actions">
           <a class="btn" href="/guild.html?id=${encodeURIComponent(guild.id)}">Open</a>
