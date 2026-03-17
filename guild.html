@@ -3,22 +3,142 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Elysium Guild</title>
+  <title>Guild Settings</title>
   <style>
-    :root { --bg:#0b0d0b; --panel:rgba(16,18,15,.9); --text:#ebe4cf; --muted:#b7ae94; --accent:#7f9256; --accent2:#56643a; --line:rgba(180,170,130,.18); --shadow:0 18px 38px rgba(0,0,0,.45);} *{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:linear-gradient(rgba(8,9,8,.72), rgba(8,9,8,.96)), url("https://i.postimg.cc/jSsVyjSM/Baner-ELYSIUM.png") center/cover fixed;min-height:100vh} .container{width:min(900px,calc(100% - 24px));margin:0 auto;padding:28px 0 48px}.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow)} .btn{display:inline-block;padding:10px 18px;border-radius:12px;text-decoration:none;font-weight:700;color:#f5f1e4;background:linear-gradient(180deg,#7f9256,#56643a);border:1px solid rgba(180,170,130,.18);box-shadow:0 8px 18px rgba(0,0,0,.35)} .muted{color:var(--muted)} .row{margin:8px 0}</style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f1117;
+      color: #fff;
+      margin: 0;
+      padding: 24px;
+    }
+    .card {
+      background: #171b24;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 14px;
+      max-width: 760px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: #5865f2;
+      color: white;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+    .btn.secondary {
+      background: #2b3242;
+    }
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+      flex: 1;
+      min-width: 260px;
+    }
+    input, select {
+      border: none;
+      outline: none;
+      border-radius: 10px;
+      padding: 12px;
+      background: #232938;
+      color: white;
+    }
+    label {
+      color: #cbd3e1;
+      font-size: 14px;
+    }
+    .muted {
+      color: #aab2c0;
+    }
+    .status {
+      margin-top: 12px;
+      color: #8fd18f;
+    }
+    .error {
+      color: #ff8a8a;
+    }
+  </style>
 </head>
 <body>
-  <main class="container">
-    <div class="card">
-      <h1>Guild Settings</h1>
-      <div class="row muted" id="guildId">Guild ID: loading...</div>
-      <div class="row muted">Это стартовая страница V1. Следующий шаг — поля настроек и сохранение в БД.</div>
-      <div style="margin-top:16px"><a class="btn" href="/dashboard.html">Back to dashboard</a></div>
+  <div class="card">
+    <h1>Guild Settings</h1>
+    <p id="guildInfo" class="muted">Загрузка...</p>
+    <a class="btn secondary" href="/dashboard.html">Back</a>
+  </div>
+
+  <div class="card">
+    <h2>Bot Settings</h2>
+
+    <div class="row">
+      <div class="field">
+        <label for="logChannelId">Log Channel ID</label>
+        <input id="logChannelId" type="text" />
+      </div>
+
+      <div class="field">
+        <label for="adminRoleId">Admin Role ID</label>
+        <input id="adminRoleId" type="text" />
+      </div>
     </div>
-  </main>
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    document.getElementById("guildId").textContent = "Guild ID: " + (params.get("id") || "not provided");
-  </script>
+
+    <div class="row">
+      <div class="field">
+        <label for="language">Language</label>
+        <select id="language">
+          <option value="ru">ru</option>
+          <option value="en">en</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="notificationsEnabled">Notifications</label>
+        <select id="notificationsEnabled">
+          <option value="true">Enabled</option>
+          <option value="false">Disabled</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Nitrado</h2>
+
+    <div class="row">
+      <div class="field">
+        <label for="nitradoServiceId">Nitrado Service ID</label>
+        <input id="nitradoServiceId" type="text" />
+      </div>
+
+      <div class="field">
+        <label for="nitradoServerName">Nitrado Server Name</label>
+        <input id="nitradoServerName" type="text" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="setupCompleted">Setup Completed</label>
+      <select id="setupCompleted">
+        <option value="false">No</option>
+        <option value="true">Yes</option>
+      </select>
+    </div>
+
+    <button id="saveBtn" class="btn">Save Settings</button>
+    <div id="status" class="status"></div>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/guild.js"></script>
 </body>
 </html>
