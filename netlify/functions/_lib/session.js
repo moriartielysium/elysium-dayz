@@ -69,6 +69,7 @@ async function createSession(user, tokenData) {
     },
     accessToken: tokenData?.access_token || null,
     refreshToken: tokenData?.refresh_token || null,
+    guildSettings: {},
     exp: expiresAt
   };
 
@@ -87,11 +88,23 @@ async function getSession(event) {
   if (!payload) return null;
   if (!payload.exp || payload.exp < Date.now()) return null;
 
-  return {
-    user: payload.user,
-    accessToken: payload.accessToken,
-    refreshToken: payload.refreshToken
+  return payload;
+}
+
+function updateSession(session, patch = {}) {
+  const expiresAt = Date.now() + 1000 * 60 * 60 * 24 * 7;
+
+  const nextPayload = {
+    ...session,
+    ...patch,
+    exp: expiresAt
   };
+
+  const value = encodeSession(nextPayload);
+
+  return makeCookie(SESSION_COOKIE, value, {
+    maxAge: 60 * 60 * 24 * 7
+  });
 }
 
 function createStateCookie(state) {
@@ -120,6 +133,7 @@ function clearSessionCookie() {
 module.exports = {
   createSession,
   getSession,
+  updateSession,
   createStateCookie,
   getStateFromCookies,
   clearStateCookie,
