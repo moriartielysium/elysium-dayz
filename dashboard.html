@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elysium Dashboard</title>
+  <style>
+    :root { --bg:#0b0d0b; --panel:rgba(16,18,15,.9); --panel2:rgba(25,28,23,.92); --text:#ebe4cf; --muted:#b7ae94; --accent:#7f9256; --accent2:#56643a; --line:rgba(180,170,130,.18); --shadow:0 18px 38px rgba(0,0,0,.45);} *{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:linear-gradient(rgba(8,9,8,.72), rgba(8,9,8,.96)), url("https://i.postimg.cc/jSsVyjSM/Baner-ELYSIUM.png") center/cover fixed;min-height:100vh} .container{width:min(1100px,calc(100% - 24px));margin:0 auto;padding:28px 0 48px}.header,.topnav{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.topnav{margin-bottom:18px}.nav-btn,.btn{display:inline-block;padding:10px 18px;border-radius:12px;text-decoration:none;font-weight:700;color:#f5f1e4;background:linear-gradient(180deg,#7f9256,#56643a);border:1px solid rgba(180,170,130,.18);box-shadow:0 8px 18px rgba(0,0,0,.35)} .btn.secondary{background:#2b3242}.header{margin-bottom:24px}.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow);backdrop-filter:blur(8px);margin-bottom:14px}.muted{color:var(--muted)}.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);margin-right:6px;font-size:12px}.guild-actions{margin-top:12px}</style>
+</head>
+<body>
+  <main class="container">
+    <div class="topnav"><a class="nav-btn" href="/main.html">Главная</a><a class="nav-btn" href="/index.html">Кланы</a></div>
+    <div class="header">
+      <div><h1>Dashboard</h1><div id="me" class="muted">Загрузка профиля...</div></div>
+      <a class="btn secondary" href="/api/auth-logout">Logout</a>
+    </div>
+    <div id="guilds">Загрузка серверов...</div>
+  </main>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/dashboard.js"></script>
+</body>
+</html>
