@@ -1,6 +1,5 @@
 const crypto = require("crypto");
 const cookie = require("cookie");
-const { query } = require("./db");
 const { getConfig } = require("./env");
 
 const config = getConfig();
@@ -37,31 +36,45 @@ function generateId(bytes = 32) {
   return crypto.randomBytes(bytes).toString("hex");
 }
 
+function encodeSession(payload) {
+  const json = JSON.stringify(payload);
+  const base64 = Buffer.from(json, "utf8").toString("base64url");
+  const signature = sign(base64);
+  return `${base64}.${signature}`;
+}
+
+function decodeSession(raw) {
+  if (!raw) return null;
+
+  const [base64, signature] = raw.split(".");
+  if (!base64 || !signature) return null;
+  if (sign(base64) !== signature) return null;
+
+  try {
+    const json = Buffer.from(base64, "base64url").toString("utf8");
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
+}
+
 async function createSession(user, tokenData) {
-  const sessionId = generateId(24);
-  const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
+  const expiresAt = Date.now() + 1000 * 60 * 60 * 24 * 7;
 
-  await query(
-    `
-      insert into dashboard_sessions
-      (session_id, user_id, username, avatar, access_token, refresh_token, created_at, expires_at)
-      values ($1, $2, $3, $4, $5, $6, now(), $7)
-      on conflict (session_id) do nothing
-    `,
-    [
-      sessionId,
-      user.id,
-      user.username,
-      user.avatar || null,
-      tokenData?.access_token || null,
-      tokenData?.refresh_token || null,
-      expiresAt
-    ]
-  );
+  const payload = {
+    user: {
+      id: user.id,
+      username: user.username,
+      avatar: user.avatar || null
+    },
+    accessToken: tokenData?.access_token || null,
+    refreshToken: tokenData?.refresh_token || null,
+    exp: expiresAt
+  };
 
-  const signed = `${sessionId}.${sign(sessionId)}`;
+  const value = encodeSession(payload);
 
-  return makeCookie(SESSION_COOKIE, signed, {
+  return makeCookie(SESSION_COOKIE, value, {
     maxAge: 60 * 60 * 24 * 7
   });
 }
@@ -69,38 +82,15 @@ async function createSession(user, tokenData) {
 async function getSession(event) {
   const cookies = parseCookies(event);
   const raw = cookies[SESSION_COOKIE];
-  if (!raw) return null;
+  const payload = decodeSession(raw);
 
-  const [sessionId, signature] = raw.split(".");
-  if (!sessionId || !signature) return null;
-  if (sign(sessionId) !== signature) return null;
-
-  const result = await query(
-    `
-      select session_id, user_id, username, avatar, access_token, refresh_token, expires_at
-      from dashboard_sessions
-      where session_id = $1
-      limit 1
-    `,
-    [sessionId]
-  );
-
-  const row = result.rows[0];
-  if (!row) return null;
-
-  if (new Date(row.expires_at).getTime() < Date.now()) {
-    return null;
-  }
+  if (!payload) return null;
+  if (!payload.exp || payload.exp < Date.now()) return null;
 
   return {
-    sessionId: row.session_id,
-    user: {
-      id: row.user_id,
-      username: row.username,
-      avatar: row.avatar
-    },
-    accessToken: row.access_token,
-    refreshToken: row.refresh_token
+    user: payload.user,
+    accessToken: payload.accessToken,
+    refreshToken: payload.refreshToken
   };
 }
 
@@ -115,6 +105,12 @@ function getStateFromCookies(event) {
   return cookies[OAUTH_STATE_COOKIE] || null;
 }
 
+function clearStateCookie() {
+  return makeCookie(OAUTH_STATE_COOKIE, "", {
+    maxAge: 0
+  });
+}
+
 function clearSessionCookie() {
   return makeCookie(SESSION_COOKIE, "", {
     maxAge: 0
@@ -126,6 +122,7 @@ module.exports = {
   getSession,
   createStateCookie,
   getStateFromCookies,
+  clearStateCookie,
   clearSessionCookie,
   generateId
 };
