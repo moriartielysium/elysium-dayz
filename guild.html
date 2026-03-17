@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Guild Settings</title>
+  <title>Guild Dashboard</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -12,13 +12,27 @@
       margin: 0;
       padding: 24px;
     }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
     .card {
       background: #171b24;
       border-radius: 16px;
       padding: 18px;
-      margin-bottom: 14px;
-      max-width: 760px;
+      margin-bottom: 16px;
     }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
     .btn {
       display: inline-block;
       padding: 10px 14px;
@@ -29,14 +43,87 @@
       border: none;
       cursor: pointer;
     }
+
     .btn.secondary {
       background: #2b3242;
     }
+
+    .muted {
+      color: #aab2c0;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #263041;
+      font-size: 12px;
+      color: #dbe4f3;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .tab-btn {
+      border: none;
+      background: #232938;
+      color: #cfd8e6;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: #5865f2;
+      color: white;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
     .row {
       display: flex;
-      gap: 12px;
+      gap: 14px;
       flex-wrap: wrap;
     }
+
+    .stat-box {
+      flex: 1;
+      min-width: 220px;
+      background: #232938;
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .stat-box h3 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      color: #cdd6e5;
+    }
+
+    .stat-box p {
+      margin: 0;
+      font-size: 15px;
+      color: white;
+      word-break: break-word;
+    }
+
     .field {
       display: flex;
       flex-direction: column;
@@ -45,6 +132,12 @@
       flex: 1;
       min-width: 260px;
     }
+
+    label {
+      color: #cbd3e1;
+      font-size: 14px;
+    }
+
     input, select {
       border: none;
       outline: none;
@@ -53,88 +146,211 @@
       background: #232938;
       color: white;
     }
-    label {
-      color: #cbd3e1;
-      font-size: 14px;
-    }
-    .muted {
-      color: #aab2c0;
-    }
+
     .status {
-      margin-top: 12px;
+      margin-top: 14px;
       color: #8fd18f;
     }
+
     .error {
       color: #ff8a8a;
+    }
+
+    .placeholder {
+      background: #232938;
+      border-radius: 14px;
+      padding: 16px;
+      color: #cfd8e6;
+    }
+
+    .log-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .log-item {
+      background: #232938;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .log-title {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #aab2c0;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Guild Settings</h1>
-    <p id="guildInfo" class="muted">Загрузка...</p>
-    <a class="btn secondary" href="/dashboard.html">Back</a>
-  </div>
-
-  <div class="card">
-    <h2>Bot Settings</h2>
-
-    <div class="row">
-      <div class="field">
-        <label for="logChannelId">Log Channel ID</label>
-        <input id="logChannelId" type="text" />
+  <div class="container">
+    <div class="card">
+      <div class="topbar">
+        <div>
+          <h1 id="guildName">Guild Dashboard</h1>
+          <div id="guildInfo" class="muted">Загрузка сервера...</div>
+        </div>
+        <div>
+          <a class="btn secondary" href="/dashboard.html">Back to Dashboard</a>
+        </div>
       </div>
 
-      <div class="field">
-        <label for="adminRoleId">Admin Role ID</label>
-        <input id="adminRoleId" type="text" />
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="field">
-        <label for="language">Language</label>
-        <select id="language">
-          <option value="ru">ru</option>
-          <option value="en">en</option>
-        </select>
+      <div class="badge-row">
+        <span class="badge" id="badgeGuildId">Guild ID: ...</span>
+        <span class="badge" id="badgeSetup">Setup: ...</span>
+        <span class="badge" id="badgeLanguage">Language: ...</span>
+        <span class="badge" id="badgeNotifications">Notifications: ...</span>
       </div>
 
-      <div class="field">
-        <label for="notificationsEnabled">Notifications</label>
-        <select id="notificationsEnabled">
-          <option value="true">Enabled</option>
-          <option value="false">Disabled</option>
-        </select>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>Nitrado</h2>
-
-    <div class="row">
-      <div class="field">
-        <label for="nitradoServiceId">Nitrado Service ID</label>
-        <input id="nitradoServiceId" type="text" />
-      </div>
-
-      <div class="field">
-        <label for="nitradoServerName">Nitrado Server Name</label>
-        <input id="nitradoServerName" type="text" />
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="overview">Overview</button>
+        <button class="tab-btn" data-tab="logs">Logs</button>
+        <button class="tab-btn" data-tab="settings">Settings</button>
+        <button class="tab-btn" data-tab="nitrado">Nitrado</button>
       </div>
     </div>
 
-    <div class="field">
-      <label for="setupCompleted">Setup Completed</label>
-      <select id="setupCompleted">
-        <option value="false">No</option>
-        <option value="true">Yes</option>
-      </select>
+    <div id="tab-overview" class="tab-panel active">
+      <div class="card">
+        <h2>Overview</h2>
+        <div class="row">
+          <div class="stat-box">
+            <h3>Guild Name</h3>
+            <p id="overviewGuildName">-</p>
+          </div>
+
+          <div class="stat-box">
+            <h3>Guild ID</h3>
+            <p id="overviewGuildId">-</p>
+          </div>
+
+          <div class="stat-box">
+            <h3>Language</h3>
+            <p id="overviewLanguage">-</p>
+          </div>
+
+          <div class="stat-box">
+            <h3>Setup Completed</h3>
+            <p id="overviewSetup">-</p>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:14px;">
+          <div class="stat-box">
+            <h3>Log Channel ID</h3>
+            <p id="overviewLogChannel">-</p>
+          </div>
+
+          <div class="stat-box">
+            <h3>Admin Role ID</h3>
+            <p id="overviewAdminRole">-</p>
+          </div>
+
+          <div class="stat-box">
+            <h3>Notifications</h3>
+            <p id="overviewNotifications">-</p>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <button id="saveBtn" class="btn">Save Settings</button>
-    <div id="status" class="status"></div>
+    <div id="tab-logs" class="tab-panel">
+      <div class="card">
+        <h2>Logs</h2>
+        <div class="placeholder">
+          Это секция под common log feeds / join logs / killfeed.<br />
+          На следующем этапе сюда подключим реальные логи от бота / сервера.
+        </div>
+
+        <div class="log-list" style="margin-top:14px;">
+          <div class="log-item">
+            <div class="log-title">Common Feed</div>
+            <div class="small">Пока заглушка для будущей ленты логов сервера.</div>
+          </div>
+
+          <div class="log-item">
+            <div class="log-title">Join / Leave</div>
+            <div class="small">Здесь позже будут входы и выходы игроков.</div>
+          </div>
+
+          <div class="log-item">
+            <div class="log-title">Killfeed</div>
+            <div class="small">Здесь позже будет киллфид и связанные события.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-settings" class="tab-panel">
+      <div class="card">
+        <h2>Bot Settings</h2>
+
+        <div class="row">
+          <div class="field">
+            <label for="logChannelId">Log Channel ID</label>
+            <input id="logChannelId" type="text" />
+          </div>
+
+          <div class="field">
+            <label for="adminRoleId">Admin Role ID</label>
+            <input id="adminRoleId" type="text" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="language">Language</label>
+            <select id="language">
+              <option value="ru">ru</option>
+              <option value="en">en</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="notificationsEnabled">Notifications</label>
+            <select id="notificationsEnabled">
+              <option value="true">Enabled</option>
+              <option value="false">Disabled</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-nitrado" class="tab-panel">
+      <div class="card">
+        <h2>Nitrado</h2>
+
+        <div class="row">
+          <div class="field">
+            <label for="nitradoServiceId">Nitrado Service ID</label>
+            <input id="nitradoServiceId" type="text" />
+          </div>
+
+          <div class="field">
+            <label for="nitradoServerName">Nitrado Server Name</label>
+            <input id="nitradoServerName" type="text" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="setupCompleted">Setup Completed</label>
+            <select id="setupCompleted">
+              <option value="false">No</option>
+              <option value="true">Yes</option>
+            </select>
+          </div>
+        </div>
+
+        <button id="saveBtn" class="btn">Save Settings</button>
+        <div id="status" class="status"></div>
+      </div>
+    </div>
   </div>
 
   <script src="/assets/js/api.js"></script>
