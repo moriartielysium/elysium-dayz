@@ -3,31 +3,6 @@ import { useParams } from "react-router-dom";
 import AdminLayout from "../../components/layout/AdminLayout";
 import { api } from "../../lib/api";
 
-function ServiceCard({ service, onBind, binding }) {
-  return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-4">
-      <div className="mb-2 text-lg font-semibold">{service.serverName || `Service ${service.serviceId}`}</div>
-      <div className="space-y-1 text-sm text-zinc-400">
-        <div>Service ID: {service.serviceId}</div>
-        <div>Тип: {service.serviceType || "—"}</div>
-        <div>Привязка: {service.isBoundToCurrentGuild ? "к этому серверу" : service.boundGuildId ? `guild ${service.boundGuildId}` : "нет"}</div>
-      </div>
-      <div className="mt-4 flex items-center justify-between gap-3">
-        <span className={`rounded-full px-3 py-1 text-xs ${service.isBoundToCurrentGuild ? "bg-emerald-950 text-emerald-300" : "bg-zinc-900 text-zinc-300"}`}>
-          {service.isBoundToCurrentGuild ? "Подключен" : "Доступен"}
-        </span>
-        <button
-          onClick={() => onBind(service.serviceId)}
-          disabled={binding}
-          className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-60"
-        >
-          {binding ? "Подключение..." : "Подключить"}
-        </button>
-      </div>
-    </div>
-  );
-}
-
 export default function AdminDashboardPage() {
   const { slug } = useParams();
   const nav = [
@@ -44,14 +19,16 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
-  const [binding, setBinding] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [serviceId, setServiceId] = useState("");
+  const [apiToken, setApiToken] = useState("");
 
   async function load() {
     try {
       setLoading(true);
       setError("");
-      const nitradoPayload = await api(`admin-nitrado-account?slug=${encodeURIComponent(slug)}`);
-      setData(nitradoPayload);
+      const payload = await api(`admin-nitrado-account?slug=${encodeURIComponent(slug)}`);
+      setData(payload);
     } catch (err) {
       setError(err.message || "Не удалось загрузить панель");
     } finally {
@@ -63,89 +40,158 @@ export default function AdminDashboardPage() {
     load();
   }, [slug]);
 
-  async function handleBind(serviceId) {
+  async function handleConnect(event) {
+    event.preventDefault();
     try {
-      setBinding(true);
-      await api("admin-nitrado-bind", {
+      setSaving(true);
+      setError("");
+      await api("admin-nitrado-connect", {
         method: "POST",
-        body: JSON.stringify({ slug, serviceId })
+        body: JSON.stringify({
+          slug,
+          serviceId: String(serviceId).trim(),
+          apiToken: String(apiToken).trim(),
+        }),
       });
+      setApiToken("");
       await load();
     } catch (err) {
-      setError(err.message || "Не удалось подключить сервис");
+      setError(err.message || "Не удалось подключить сервер");
     } finally {
-      setBinding(false);
+      setSaving(false);
     }
   }
 
-  async function handleNitradoLogout() {
+  async function handleRefresh() {
     try {
-      await api("nitrado-logout", { method: "POST" });
-      window.location.reload();
+      setSaving(true);
+      setError("");
+      await api("admin-nitrado-refresh", {
+        method: "POST",
+        body: JSON.stringify({ slug }),
+      });
+      await load();
     } catch (err) {
-      setError(err.message || "Не удалось выйти из Nitrado");
+      setError(err.message || "Не удалось обновить данные");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDisconnect() {
+    const confirmed = window.confirm("Отключить текущий Nitrado сервер от этой панели?");
+    if (!confirmed) return;
+    try {
+      setSaving(true);
+      setError("");
+      await api("admin-nitrado-disconnect", {
+        method: "POST",
+        body: JSON.stringify({ slug }),
+      });
+      await load();
+    } catch (err) {
+      setError(err.message || "Не удалось отключить сервер");
+    } finally {
+      setSaving(false);
     }
   }
 
   return (
     <AdminLayout title="Админка" subtitle={`Сервер: ${slug}`} nav={nav}>
       {loading ? <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6">Загрузка...</div> : null}
+
       {!loading && error ? <div className="mb-4 rounded-2xl border border-red-900 bg-red-950/50 p-4 text-red-200">{error}</div> : null}
 
       {!loading && !data?.connected ? (
-        <div className="space-y-4 rounded-2xl border border-zinc-800 bg-zinc-950 p-6">
+        <div className="space-y-5 rounded-2xl border border-zinc-800 bg-zinc-950 p-6">
           <div>
-            <h2 className="text-xl font-semibold">Вход для администраторов</h2>
+            <h2 className="text-xl font-semibold">Подключение Nitrado вручную</h2>
             <p className="mt-2 text-sm text-zinc-400">
-              Войди через Nitrado, предоставь доступ приложению и после этого сайт автоматически загрузит доступные игровые серверы.
+              Вставь <span className="font-medium text-zinc-200">Service ID</span> и{" "}
+              <span className="font-medium text-zinc-200">API Token</span> от своего Nitrado аккаунта.
+              После проверки сайт сохранит подключение и начнет работать с этим сервером.
             </p>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <a
-              href={`/api/nitrado-login?slug=${encodeURIComponent(slug)}`}
-              className="inline-flex rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500"
-            >
-              Войти через Nitrado
-            </a>
-          </div>
+
+          <form className="grid gap-4 md:max-w-xl" onSubmit={handleConnect}>
+            <label className="grid gap-2">
+              <span className="text-sm text-zinc-300">Service ID</span>
+              <input
+                value={serviceId}
+                onChange={(e) => setServiceId(e.target.value)}
+                className="rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-zinc-100 outline-none ring-0 placeholder:text-zinc-500"
+                placeholder="Например: 12345678"
+                required
+              />
+            </label>
+
+            <label className="grid gap-2">
+              <span className="text-sm text-zinc-300">Nitrado API Token</span>
+              <input
+                type="password"
+                value={apiToken}
+                onChange={(e) => setApiToken(e.target.value)}
+                className="rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-zinc-100 outline-none ring-0 placeholder:text-zinc-500"
+                placeholder="Вставь токен сюда"
+                required
+              />
+            </label>
+
+            <div className="flex gap-3">
+              <button
+                type="submit"
+                disabled={saving || !serviceId || !apiToken}
+                className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-60"
+              >
+                {saving ? "Подключение..." : "Подключить сервер"}
+              </button>
+            </div>
+          </form>
         </div>
       ) : null}
 
       {!loading && data?.connected ? (
         <div className="space-y-6">
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6">
-            <div className="flex flex-wrap items-start justify-between gap-4">
+            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
               <div>
-                <h2 className="text-xl font-semibold">Nitrado аккаунт подключен</h2>
-                <div className="mt-3 text-sm text-zinc-400">
-                  <div>Аккаунт: {data.account?.accountLabel || "—"}</div>
-                  <div>Token type: {data.account?.tokenType || "—"}</div>
-                  <div>Доступно services: {(data.services || []).length}</div>
+                <h2 className="text-xl font-semibold">Nitrado сервер подключен</h2>
+                <div className="mt-3 space-y-1 text-sm text-zinc-400">
+                  <div>Service ID: {data.serviceId || "—"}</div>
+                  <div>Имя сервера: {data.serverName || "—"}</div>
+                  <div>Тип: {data.serviceType || "—"}</div>
+                  <div>Токен: {data.tokenLast4 ? `****${data.tokenLast4}` : "—"}</div>
+                  <div>Обновлено: {data.updatedAt || "—"}</div>
                 </div>
               </div>
-              <button
-                onClick={handleNitradoLogout}
-                className="rounded-xl border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-200 hover:bg-zinc-900"
-              >
-                Отключить Nitrado
-              </button>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={handleRefresh}
+                  disabled={saving}
+                  className="rounded-xl bg-zinc-800 px-4 py-2 text-sm font-medium text-zinc-100 hover:bg-zinc-700 disabled:opacity-60"
+                >
+                  {saving ? "Обновление..." : "Обновить"}
+                </button>
+                <button
+                  onClick={handleDisconnect}
+                  disabled={saving}
+                  className="rounded-xl bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 disabled:opacity-60"
+                >
+                  Отключить
+                </button>
+              </div>
             </div>
           </div>
 
-          <div>
-            <h3 className="mb-4 text-lg font-semibold">Доступные игровые серверы</h3>
-            {(data.services || []).length ? (
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {(data.services || []).map((service) => (
-                  <ServiceCard key={service.serviceId} service={service} onBind={handleBind} binding={binding} />
-                ))}
-              </div>
-            ) : (
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6 text-sm text-zinc-400">
-                В текущем Nitrado-аккаунте не найдено доступных игровых services.
-              </div>
-            )}
-          </div>
+          {data.details ? (
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6">
+              <h3 className="mb-3 text-lg font-semibold">Данные сервера</h3>
+              <pre className="overflow-auto rounded-xl bg-zinc-900 p-4 text-xs text-zinc-300">
+                {JSON.stringify(data.details, null, 2)}
+              </pre>
+            </div>
+          ) : null}
         </div>
       ) : null}
     </AdminLayout>
