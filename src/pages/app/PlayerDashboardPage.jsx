@@ -13,11 +13,11 @@ function StatCard({ title, value, subtitle }) {
 }
 
 export default function PlayerDashboardPage() {
-  const { slug, me, profile, authChecked } = useOutletContext();
-  const [stats, setStats] = useState(null);
-  const [wallet, setWallet] = useState(null);
-  const [orders, setOrders] = useState(null);
-  const [error, setError] = useState("");
+  const outlet = useOutletContext() || {};
+  const slug = outlet.slug || "elysium";
+  const me = outlet.me || null;
+  const profile = outlet.profile || null;
+  const authChecked = outlet.authChecked ?? true;
 
   useEffect(() => {
     if (!authChecked) return;
