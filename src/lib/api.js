@@ -1,20 +1,20 @@
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.elysium-dayz.site';
+
 export async function api(path, options = {}) {
-  const response = await fetch(`/api/${path.replace(/^\/+/, "")}`, {
-    credentials: "include",
+  const response = await fetch(`${API_BASE_URL}/${path.replace(/^\/+/, '')}`, {
+    credentials: 'include',
     headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {})
+      'Content-Type': 'application/json',
+      ...(options.headers || {}),
     },
-    ...options
+    ...options,
   });
 
-  const contentType = response.headers.get("content-type") || "";
-  const payload = contentType.includes("application/json")
-    ? await response.json()
-    : await response.text();
+  const contentType = response.headers.get('content-type') || '';
+  const payload = contentType.includes('application/json') ? await response.json() : await response.text();
 
   if (!response.ok) {
-    throw new Error(payload?.error || payload?.message || "API request failed");
+    throw new Error(payload?.detail || payload?.error || payload?.message || 'API request failed');
   }
 
   return payload;
