@@ -2,14 +2,14 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { discordAvatarUrl } from "../../lib/player";
 
-export default function Header({ me, profile, slug = "elysium" }) {
+export default function Header({ me, profile, slug = "elysium", title = "Кабинет игрока", subtitle = "Баланс, статистика и заказы" }) {
   const avatar = discordAvatarUrl(me?.user);
 
   return (
     <header style={styles.header}>
       <div>
-        <h1 style={styles.title}>Кабинет игрока</h1>
-        <div style={styles.subtitle}>Баланс, статистика и заказы</div>
+        <h1 style={styles.title}>{title}</h1>
+        <div style={styles.subtitle}>{subtitle}</div>
       </div>
 
       <div style={styles.actions}>
@@ -19,10 +19,7 @@ export default function Header({ me, profile, slug = "elysium" }) {
           type="button"
           style={styles.dangerBtn}
           onClick={async () => {
-            await fetch("/api/auth-logout", {
-              method: "POST",
-              credentials: "include",
-            });
+            await fetch("/api/auth-logout", { method: "POST", credentials: "include" });
             window.location.href = "/";
           }}
         >
@@ -30,19 +27,10 @@ export default function Header({ me, profile, slug = "elysium" }) {
         </button>
 
         <div style={styles.identity}>
-          {avatar ? (
-            <img src={avatar} alt="" style={styles.avatar} />
-          ) : (
-            <div style={styles.avatarFallback}>D</div>
-          )}
-
+          {avatar ? <img src={avatar} alt="" style={styles.avatar} /> : <div style={styles.avatarFallback}>D</div>}
           <div>
-            <div style={styles.name}>
-              {me?.user?.global_name || me?.user?.username || "Игрок"}
-            </div>
-            <div style={styles.meta}>
-              PSN: {profile?.psn_name || profile?.normalized_psn_name || "не привязан"}
-            </div>
+            <div style={styles.name}>{me?.user?.global_name || me?.user?.username || "Игрок"}</div>
+            <div style={styles.meta}>PSN: {profile?.psnName || profile?.psn_name || profile?.normalizedPsnName || profile?.normalized_psn_name || "не привязан"}</div>
           </div>
         </div>
       </div>
@@ -65,13 +53,7 @@ const styles = {
   },
   title: { margin: 0, color: "#fff", fontSize: 34, fontWeight: 800 },
   subtitle: { color: "rgba(255,255,255,0.55)", marginTop: 4 },
-  actions: {
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-    flexWrap: "wrap",
-    justifyContent: "flex-end",
-  },
+  actions: { display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "flex-end" },
   secondaryBtn: {
     padding: "10px 14px",
     borderRadius: 10,
@@ -98,22 +80,10 @@ const styles = {
     padding: "8px 12px",
     minWidth: 210,
   },
-  avatar: {
-    width: 42,
-    height: 42,
-    borderRadius: "50%",
-    objectFit: "cover",
-  },
+  avatar: { width: 42, height: 42, borderRadius: "50%", objectFit: "cover" },
   avatarFallback: {
-    width: 42,
-    height: 42,
-    borderRadius: "50%",
-    background: "#333",
-    color: "#fff",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontWeight: 700,
+    width: 42, height: 42, borderRadius: "50%", background: "#333", color: "#fff",
+    display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700,
   },
   name: { color: "#fff", fontWeight: 700 },
   meta: { color: "rgba(255,255,255,0.65)", fontSize: 13 },

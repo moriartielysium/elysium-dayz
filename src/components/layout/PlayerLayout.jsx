@@ -1,62 +1,35 @@
-import React, { useEffect, useState } from "react";
-import { NavLink, Outlet, useNavigate, useParams } from "react-router-dom";
+import React from "react";
+import { NavLink } from "react-router-dom";
 import Header from "./Header";
-import { getMe, getPlayerProfile, resolveSlug } from "../../lib/player";
 
-export default function PlayerLayout() {
-  const params = useParams();
-  const rawSlug = params?.slug || "elysium";
-  const slug = resolveSlug(rawSlug);
-  const navigate = useNavigate();
-
-  const [me, setMe] = useState(null);
-  const [profile, setProfile] = useState(null);
-  const [authChecked, setAuthChecked] = useState(false);
-
-  useEffect(() => {
-    if (rawSlug !== slug) {
-      navigate(`/app/${slug}`, { replace: true });
-      return;
-    }
-
-    let mounted = true;
-
-    Promise.allSettled([getMe(), getPlayerProfile(slug)])
-      .then((results) => {
-        if (!mounted) return;
-
-        if (results[0].status === "fulfilled") setMe(results[0].value);
-        if (results[1].status === "fulfilled") setProfile(results[1].value);
-      })
-      .finally(() => {
-        if (mounted) setAuthChecked(true);
-      });
-
-    return () => {
-      mounted = false;
-    };
-  }, [rawSlug, slug, navigate]);
-
+export default function PlayerLayout({
+  title = "Кабинет игрока",
+  subtitle = "",
+  nav = {},
+  me = null,
+  profile = null,
+  slug = "elysium",
+  children,
+}) {
   const links = [
-    { label: "Главная", to: `/app/${slug}` },
-    { label: "Статистика", to: `/app/${slug}/stats` },
-    { label: "Профиль", to: `/app/${slug}/profile` },
-    { label: "Заказы", to: `/app/${slug}/orders` },
-    { label: "Магазин", to: `/app/${slug}/shop` },
-    { label: "Клан", to: `/app/${slug}/clan` },
+    { label: "Главная", to: nav.dashboard || `/app/${slug}` },
+    { label: "Статистика", to: nav.stats || `/app/${slug}/stats` },
+    { label: "Профиль", to: nav.profile || `/app/${slug}/profile` },
+    { label: "Заказы", to: nav.orders || `/app/${slug}/orders` },
+    { label: "Магазин", to: nav.shop || `/app/${slug}/shop` },
+    { label: "Клан", to: nav.clan || `/app/${slug}/clan` },
   ];
 
   return (
     <div style={styles.page}>
-      <Header me={me} profile={profile} slug={slug} />
-
+      <Header me={me} profile={profile} slug={slug} title={title} subtitle={subtitle} />
       <div style={styles.body}>
         <aside style={styles.sidebar}>
           {links.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
-              end={item.to === `/app/${slug}`}
+              end={item.to === (nav.dashboard || `/app/${slug}`)}
               style={({ isActive }) => ({
                 ...styles.navLink,
                 background: isActive ? "rgba(255,255,255,0.10)" : "transparent",
@@ -67,10 +40,7 @@ export default function PlayerLayout() {
             </NavLink>
           ))}
         </aside>
-
-        <main style={styles.main}>
-          <Outlet context={{ slug, me, profile, authChecked }} />
-        </main>
+        <main style={styles.main}>{children}</main>
       </div>
     </div>
   );
@@ -78,13 +48,7 @@ export default function PlayerLayout() {
 
 const styles = {
   page: { minHeight: "100vh", background: "#050507" },
-  body: {
-    display: "grid",
-    gridTemplateColumns: "240px 1fr",
-    gap: 0,
-    maxWidth: 1400,
-    margin: "0 auto",
-  },
+  body: { display: "grid", gridTemplateColumns: "240px 1fr", gap: 0, maxWidth: 1400, margin: "0 auto" },
   sidebar: {
     padding: 24,
     borderRight: "1px solid rgba(255,255,255,0.08)",
