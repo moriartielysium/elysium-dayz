@@ -1,11 +1,15 @@
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'https://api.elysium-dayz.site').replace(/\/$/, '');
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
 
 export function getApiBaseUrl() {
   return API_BASE_URL;
 }
 
 export function buildApiUrl(path = '') {
-  return `${API_BASE_URL}/${String(path).replace(/^\/+/, '')}`;
+  const clean = String(path).replace(/^\/+/, '');
+  if (/^https?:\/\//i.test(API_BASE_URL)) {
+    return `${API_BASE_URL}/${clean}`;
+  }
+  return `${API_BASE_URL}/${clean}`.replace(/([^:]\/)(\/+)/g, '$1/');
 }
 
 export async function api(path, options = {}) {
