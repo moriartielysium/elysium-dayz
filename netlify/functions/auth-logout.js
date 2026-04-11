@@ -1,12 +1,14 @@
-import { ok } from "./_shared/response.js";
-import { clearSessionCookie } from "./_shared/session.js";
+import { clearOauthStateCookie, clearSessionCookie } from "./_shared/session.js";
 
 export const handler = async () => {
   return {
-    ...ok({ ok: true }),
+    statusCode: 200,
     headers: {
-      "Content-Type": "application/json",
-      "Set-Cookie": clearSessionCookie()
-    }
+      "Content-Type": "application/json"
+    },
+    multiValueHeaders: {
+      "Set-Cookie": [clearSessionCookie(), clearOauthStateCookie()]
+    },
+    body: JSON.stringify({ ok: true })
   };
 };
