@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 
 const SESSION_COOKIE = "elysium_session";
 const OAUTH_STATE_COOKIE = "elysium_oauth_state";
+const NITRADO_OAUTH_STATE_COOKIE = "elysium_nitrado_oauth_state";
 
 function base64urlEncode(input) {
   return Buffer.from(input, "utf-8").toString("base64url");
@@ -93,6 +94,33 @@ export function getOauthStateFromEvent(event) {
 
 export function clearOauthStateCookie() {
   return cookie.serialize(OAUTH_STATE_COOKIE, "", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    path: "/",
+    expires: new Date(0)
+  });
+}
+
+export function buildNitradoOauthStateCookie(state) {
+  return cookie.serialize(NITRADO_OAUTH_STATE_COOKIE, pack({ state }), {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 10
+  });
+}
+
+export function getNitradoOauthStateFromEvent(event) {
+  const cookies = getCookies(event);
+  const raw = cookies[NITRADO_OAUTH_STATE_COOKIE];
+  const payload = unpack(raw);
+  return payload?.state || null;
+}
+
+export function clearNitradoOauthStateCookie() {
+  return cookie.serialize(NITRADO_OAUTH_STATE_COOKIE, "", {
     httpOnly: true,
     secure: true,
     sameSite: "lax",
