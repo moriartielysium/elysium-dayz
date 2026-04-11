@@ -4,9 +4,11 @@ import Header from "./Header";
 import { getMe, getPlayerProfile, resolveSlug } from "../../lib/player";
 
 export default function PlayerLayout() {
-  const { slug: rawSlug } = useParams();
+  const params = useParams();
+  const rawSlug = params?.slug || "elysium";
   const slug = resolveSlug(rawSlug);
   const navigate = useNavigate();
+
   const [me, setMe] = useState(null);
   const [profile, setProfile] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
@@ -18,11 +20,13 @@ export default function PlayerLayout() {
     }
 
     let mounted = true;
+
     Promise.allSettled([getMe(), getPlayerProfile(slug)])
-      .then((items) => {
+      .then((results) => {
         if (!mounted) return;
-        if (items[0].status === "fulfilled") setMe(items[0].value);
-        if (items[1].status === "fulfilled") setProfile(items[1].value);
+
+        if (results[0].status === "fulfilled") setMe(results[0].value);
+        if (results[1].status === "fulfilled") setProfile(results[1].value);
       })
       .finally(() => {
         if (mounted) setAuthChecked(true);
@@ -44,7 +48,7 @@ export default function PlayerLayout() {
 
   return (
     <div style={styles.page}>
-      <Header me={me} profile={profile} />
+      <Header me={me} profile={profile} slug={slug} />
 
       <div style={styles.body}>
         <aside style={styles.sidebar}>
@@ -74,7 +78,13 @@ export default function PlayerLayout() {
 
 const styles = {
   page: { minHeight: "100vh", background: "#050507" },
-  body: { display: "grid", gridTemplateColumns: "240px 1fr", gap: 0, maxWidth: 1400, margin: "0 auto" },
+  body: {
+    display: "grid",
+    gridTemplateColumns: "240px 1fr",
+    gap: 0,
+    maxWidth: 1400,
+    margin: "0 auto",
+  },
   sidebar: {
     padding: 24,
     borderRight: "1px solid rgba(255,255,255,0.08)",
