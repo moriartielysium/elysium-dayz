@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AdminLayout from "../../components/layout/AdminLayout";
-import { api } from "../../lib/api";
+import { api, buildApiUrl } from "../../lib/api";
 
 function ServiceCard({ service, onBind, binding }) {
   return (
@@ -107,7 +107,7 @@ export default function AdminDashboardPage() {
           </div>
           <div>
             <a
-              href="/api/nitrado-login"
+              href={buildApiUrl(`nitrado-login?slug=${encodeURIComponent(slug)}`)}
               className="inline-flex rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500"
             >
               Подключить Nitrado
