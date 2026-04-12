@@ -1,34 +1,76 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import AdminLayout from "../../components/layout/AdminLayout";
 import { api } from "../../lib/api";
+import { getAdminNav, normalizeSlug } from "../../lib/nav";
 
-export default function AdminDashboardPage() {
-  const { slug } = useParams();
-  const nav = [
-    { label: "Dashboard", to: `/admin/${slug}` },
-    { label: "Настройки", to: `/admin/${slug}/settings` },
-    { label: "Кланы", to: `/admin/${slug}/clans` },
-    { label: "Категории", to: `/admin/${slug}/categories` },
-    { label: "Товары", to: `/admin/${slug}/items` },
-    { label: "Заказы", to: `/admin/${slug}/orders` },
-    { label: "Медиа", to: `/admin/${slug}/media` },
-    { label: "Доступ", to: `/admin/${slug}/access` }
-  ];
-
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState(null);
-  const [error, setError] = useState("");
-  const [saving, setSaving] = useState(false);
+function ManualConnectCard({ slug, onConnected }) {
   const [serviceId, setServiceId] = useState("");
   const [apiToken, setApiToken] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  async function onSubmit(e) {
+    e.preventDefault();
+    setSubmitting(true);
+    setError("");
+    try {
+      await api("admin-manual-nitrado-connect", {
+        method: "POST",
+        body: JSON.stringify({ slug, serviceId, apiToken }),
+      });
+      setServiceId("");
+      setApiToken("");
+      await onConnected?.();
+    } catch (err) {
+      setError(err.message || "Не удалось подключить сервер");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <div className="space-y-4 rounded-2xl border border-zinc-800 bg-zinc-950 p-6">
+      <div>
+        <h2 className="text-xl font-semibold">Подключение Nitrado вручную</h2>
+        <p className="mt-2 text-sm text-zinc-400">Вставь Service ID и API Token от своего Nitrado аккаунта. После проверки сайт сохранит подключение и начнет работать с этим сервером.</p>
+      </div>
+      {error ? <div className="rounded-xl border border-red-900 bg-red-950/50 p-3 text-sm text-red-200">{error}</div> : null}
+      <form className="space-y-4" onSubmit={onSubmit}>
+        <div>
+          <label className="mb-2 block text-sm text-zinc-300">Service ID</label>
+          <input value={serviceId} onChange={(e) => setServiceId(e.target.value)} className="w-full rounded-xl border border-zinc-800 bg-[#05224a] px-4 py-3 text-white outline-none" placeholder="Например: 18524065" />
+        </div>
+        <div>
+          <label className="mb-2 block text-sm text-zinc-300">Nitrado API Token</label>
+          <input type="password" value={apiToken} onChange={(e) => setApiToken(e.target.value)} className="w-full rounded-xl border border-zinc-800 bg-[#05224a] px-4 py-3 text-white outline-none" placeholder="Вставь токен" />
+        </div>
+        <button disabled={submitting} className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-60">{submitting ? "Подключение..." : "Подключить сервер"}</button>
+      </form>
+    </div>
+  );
+}
+
+export default function AdminDashboardPage() {
+  const params = useParams();
+  const navigate = useNavigate();
+  const slug = useMemo(() => normalizeSlug(params?.slug), [params?.slug]);
+  const nav = useMemo(() => getAdminNav(slug), [slug]);
+
+  const [loading, setLoading] = useState(true);
+  const [access, setAccess] = useState(null);
+  const [data, setData] = useState(null);
+  const [error, setError] = useState("");
 
   async function load() {
     try {
       setLoading(true);
       setError("");
-      const payload = await api(`admin-nitrado-account?slug=${encodeURIComponent(slug)}`);
-      setData(payload);
+      const accessPayload = await api(`guild-access?slug=${encodeURIComponent(slug)}`);
+      setAccess(accessPayload);
+      if (!accessPayload.canUseAdminZone) return;
+      const nitradoPayload = await api(`admin-nitrado-account?slug=${encodeURIComponent(slug)}`);
+      setData(nitradoPayload);
     } catch (err) {
       setError(err.message || "Не удалось загрузить панель");
     } finally {
@@ -37,159 +79,35 @@ export default function AdminDashboardPage() {
   }
 
   useEffect(() => {
+    if (params?.slug !== slug) {
+      navigate(`/admin/${slug}`, { replace: true });
+      return;
+    }
     load();
-  }, [slug]);
-
-  async function handleConnect(event) {
-    event.preventDefault();
-    try {
-      setSaving(true);
-      setError("");
-      await api("admin-nitrado-connect", {
-        method: "POST",
-        body: JSON.stringify({
-          slug,
-          serviceId: String(serviceId).trim(),
-          apiToken: String(apiToken).trim(),
-        }),
-      });
-      setApiToken("");
-      await load();
-    } catch (err) {
-      setError(err.message || "Не удалось подключить сервер");
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  async function handleRefresh() {
-    try {
-      setSaving(true);
-      setError("");
-      await api("admin-nitrado-refresh", {
-        method: "POST",
-        body: JSON.stringify({ slug }),
-      });
-      await load();
-    } catch (err) {
-      setError(err.message || "Не удалось обновить данные");
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  async function handleDisconnect() {
-    const confirmed = window.confirm("Отключить текущий Nitrado сервер от этой панели?");
-    if (!confirmed) return;
-    try {
-      setSaving(true);
-      setError("");
-      await api("admin-nitrado-disconnect", {
-        method: "POST",
-        body: JSON.stringify({ slug }),
-      });
-      await load();
-    } catch (err) {
-      setError(err.message || "Не удалось отключить сервер");
-    } finally {
-      setSaving(false);
-    }
-  }
+  }, [slug, params?.slug]);
 
   return (
     <AdminLayout title="Админка" subtitle={`Сервер: ${slug}`} nav={nav}>
       {loading ? <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6">Загрузка...</div> : null}
-
       {!loading && error ? <div className="mb-4 rounded-2xl border border-red-900 bg-red-950/50 p-4 text-red-200">{error}</div> : null}
-
-      {!loading && !data?.connected ? (
-        <div className="space-y-5 rounded-2xl border border-zinc-800 bg-zinc-950 p-6">
-          <div>
-            <h2 className="text-xl font-semibold">Подключение Nitrado вручную</h2>
-            <p className="mt-2 text-sm text-zinc-400">
-              Вставь <span className="font-medium text-zinc-200">Service ID</span> и{" "}
-              <span className="font-medium text-zinc-200">API Token</span> от своего Nitrado аккаунта.
-              После проверки сайт сохранит подключение и начнет работать с этим сервером.
-            </p>
-          </div>
-
-          <form className="grid gap-4 md:max-w-xl" onSubmit={handleConnect}>
-            <label className="grid gap-2">
-              <span className="text-sm text-zinc-300">Service ID</span>
-              <input
-                value={serviceId}
-                onChange={(e) => setServiceId(e.target.value)}
-                className="rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-zinc-100 outline-none ring-0 placeholder:text-zinc-500"
-                placeholder="Например: 12345678"
-                required
-              />
-            </label>
-
-            <label className="grid gap-2">
-              <span className="text-sm text-zinc-300">Nitrado API Token</span>
-              <input
-                type="password"
-                value={apiToken}
-                onChange={(e) => setApiToken(e.target.value)}
-                className="rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-zinc-100 outline-none ring-0 placeholder:text-zinc-500"
-                placeholder="Вставь токен сюда"
-                required
-              />
-            </label>
-
-            <div className="flex gap-3">
-              <button
-                type="submit"
-                disabled={saving || !serviceId || !apiToken}
-                className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-60"
-              >
-                {saving ? "Подключение..." : "Подключить сервер"}
-              </button>
-            </div>
-          </form>
-        </div>
-      ) : null}
-
+      {!loading && access && !access.canUseAdminZone ? <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6">У тебя нет доступа к админке этого сервера.</div> : null}
+      {!loading && access?.canUseAdminZone && !data?.connected ? <ManualConnectCard slug={slug} onConnected={load} /> : null}
       {!loading && data?.connected ? (
         <div className="space-y-6">
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6">
-            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-              <div>
-                <h2 className="text-xl font-semibold">Nitrado сервер подключен</h2>
-                <div className="mt-3 space-y-1 text-sm text-zinc-400">
-                  <div>Service ID: {data.serviceId || "—"}</div>
-                  <div>Имя сервера: {data.serverName || "—"}</div>
-                  <div>Тип: {data.serviceType || "—"}</div>
-                  <div>Токен: {data.tokenLast4 ? `****${data.tokenLast4}` : "—"}</div>
-                  <div>Обновлено: {data.updatedAt || "—"}</div>
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <button
-                  onClick={handleRefresh}
-                  disabled={saving}
-                  className="rounded-xl bg-zinc-800 px-4 py-2 text-sm font-medium text-zinc-100 hover:bg-zinc-700 disabled:opacity-60"
-                >
-                  {saving ? "Обновление..." : "Обновить"}
-                </button>
-                <button
-                  onClick={handleDisconnect}
-                  disabled={saving}
-                  className="rounded-xl bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 disabled:opacity-60"
-                >
-                  Отключить
-                </button>
-              </div>
+            <div className="mb-2 text-2xl font-semibold">Nitrado сервер подключен</div>
+            <div className="space-y-1 text-sm text-zinc-300">
+              <div>Service ID: {data.service?.serviceId || data.account?.serviceId || "—"}</div>
+              <div>Имя сервера: {data.service?.serverName || data.account?.serverName || "—"}</div>
+              <div>Тип: {data.service?.serviceType || data.account?.serviceType || "—"}</div>
+              <div>Token: {data.account?.maskedToken || data.account?.tokenMasked || "***"}</div>
+              <div>Обновлено: {data.account?.updatedAt || data.service?.updatedAt || "—"}</div>
             </div>
           </div>
-
-          {data.details ? (
+          {data.service?.detailsJson || data.account?.detailsJson ? (
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6">
-              <h3 className="mb-3 text-lg font-semibold">Данные сервера</h3>
-              <pre className="overflow-auto rounded-xl bg-zinc-900 p-4 text-xs text-zinc-300">
-                {JSON.stringify(data.details, null, 2)}
-              </pre>
+              <div className="mb-3 text-xl font-semibold">Данные сервера</div>
+              <pre className="overflow-auto rounded-xl bg-zinc-900 p-4 text-xs text-zinc-300">{JSON.stringify(data.service?.detailsJson || data.account?.detailsJson, null, 2)}</pre>
             </div>
           ) : null}
         </div>

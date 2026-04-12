@@ -1,12 +1,17 @@
+import { useMemo } from "react";
+import { useParams } from "react-router-dom";
 import PlayerLayout from "../../components/layout/PlayerLayout";
-
-const nav = [{ label: "Главная", to: "/app/demo" }, { label: "Магазин", to: "/app/demo/shop" }, { label: "Заказы", to: "/app/demo/orders" }, { label: "Профиль", to: "/app/demo/profile" }, { label: "Клан", to: "/app/demo/clan" }];
+import { getPlayerNav, normalizeSlug } from "../../lib/nav";
 
 export default function PlayerClanPage() {
+  const params = useParams();
+  const slug = useMemo(() => normalizeSlug(params?.slug), [params?.slug]);
+  const nav = useMemo(() => getPlayerNav(slug), [slug]);
+
   return (
-    <PlayerLayout title="Клан" subtitle="Информация о клане игрока" nav={nav}>
+    <PlayerLayout title="Клан" subtitle="Информация о клане" nav={nav}>
       <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6 text-sm text-zinc-400">
-        Здесь будет клановая страница игрока.
+        Здесь будет раздел: Клан.
       </div>
     </PlayerLayout>
   );

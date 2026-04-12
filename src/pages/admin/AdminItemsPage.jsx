@@ -1,10 +1,15 @@
+import { useMemo } from "react";
+import { useParams } from "react-router-dom";
 import AdminLayout from "../../components/layout/AdminLayout";
-
-const nav = [{ label: "Dashboard", to: "/admin/demo" }, { label: "Настройки", to: "/admin/demo/settings" }, { label: "Кланы", to: "/admin/demo/clans" }, { label: "Категории", to: "/admin/demo/categories" }, { label: "Товары", to: "/admin/demo/items" }, { label: "Заказы", to: "/admin/demo/orders" }, { label: "Медиа", to: "/admin/demo/media" }, { label: "Доступ", to: "/admin/demo/access" }];
+import { getAdminNav, normalizeSlug } from "../../lib/nav";
 
 export default function AdminItemsPage() {
+  const params = useParams();
+  const slug = useMemo(() => normalizeSlug(params?.slug), [params?.slug]);
+  const nav = useMemo(() => getAdminNav(slug), [slug]);
+
   return (
-    <AdminLayout title="Товары" subtitle="Таблица товаров" nav={nav}>
+    <AdminLayout title="Товары" subtitle="Управление товарами" nav={nav}>
       <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6 text-sm text-zinc-400">
         Здесь будет раздел: Товары.
       </div>
