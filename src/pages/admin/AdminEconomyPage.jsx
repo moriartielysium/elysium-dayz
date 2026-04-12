@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import AdminLayout from "../../components/layout/AdminLayout";
 import { api } from "../../lib/api";
 import { getAdminNav } from "../../lib/admin";
+import { loginWithDiscord } from "../../lib/auth";
 
 const emptyForm = {
   currencyName: "Coins",
@@ -126,7 +127,23 @@ export default function AdminEconomyPage() {
         </div>
       ) : null}
 
-      {!loading ? (
+      {!loading && error === "Not logged in" ? (
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6">
+          <h2 className="text-xl font-semibold text-white">Требуется вход через Discord</h2>
+          <p className="mt-2 text-sm text-zinc-400">
+            Экономика сервера доступна только после обычного Discord-входа администратора.
+          </p>
+          <button
+            type="button"
+            onClick={loginWithDiscord}
+            className="mt-4 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500"
+          >
+            Войти через Discord
+          </button>
+        </div>
+      ) : null}
+
+      {!loading && error !== "Not logged in" ? (
         <form onSubmit={handleSave} className="space-y-6">
           {success ? (
             <div className="rounded-2xl border border-emerald-900 bg-emerald-950/50 p-4 text-sm text-emerald-200">

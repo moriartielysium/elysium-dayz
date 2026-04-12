@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import AdminLayout from "../../components/layout/AdminLayout";
 import { api } from "../../lib/api";
 import { getAdminNav } from "../../lib/admin";
+import { loginWithDiscord } from "../../lib/auth";
 
 export default function AdminDashboardPage() {
   const { slug } = useParams();
@@ -94,7 +95,22 @@ export default function AdminDashboardPage() {
 
       {!loading && error ? <div className="mb-4 rounded-2xl border border-red-900 bg-red-950/50 p-4 text-red-200">{error}</div> : null}
 
-      {!loading && !data?.connected ? (
+      {!loading && error === "Not logged in" ? (
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6">
+          <h2 className="text-xl font-semibold">Требуется вход через Discord</h2>
+          <p className="mt-2 text-sm text-zinc-400">
+            Админка теперь требует активную Discord-сессию. Сначала войди через Discord, потом открывай настройки сервера.
+          </p>
+          <button
+            onClick={loginWithDiscord}
+            className="mt-4 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500"
+          >
+            Войти через Discord
+          </button>
+        </div>
+      ) : null}
+
+      {!loading && !error && !data?.connected ? (
         <div className="space-y-5 rounded-2xl border border-zinc-800 bg-zinc-950 p-6">
           <div>
             <h2 className="text-xl font-semibold">Подключение Nitrado вручную</h2>
