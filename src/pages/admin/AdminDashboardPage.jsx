@@ -2,19 +2,11 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AdminLayout from "../../components/layout/AdminLayout";
 import { api } from "../../lib/api";
+import { getAdminNav } from "../../lib/admin";
 
 export default function AdminDashboardPage() {
   const { slug } = useParams();
-  const nav = [
-    { label: "Dashboard", to: `/admin/${slug}` },
-    { label: "Настройки", to: `/admin/${slug}/settings` },
-    { label: "Кланы", to: `/admin/${slug}/clans` },
-    { label: "Категории", to: `/admin/${slug}/categories` },
-    { label: "Товары", to: `/admin/${slug}/items` },
-    { label: "Заказы", to: `/admin/${slug}/orders` },
-    { label: "Медиа", to: `/admin/${slug}/media` },
-    { label: "Доступ", to: `/admin/${slug}/access` }
-  ];
+  const nav = getAdminNav(slug);
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
