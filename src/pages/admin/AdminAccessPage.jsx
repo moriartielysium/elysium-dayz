@@ -1,10 +1,11 @@
+import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import AdminLayout from "../../components/layout/AdminLayout";
 import { getAdminNav } from "../../lib/admin";
 
 export default function AdminAccessPage() {
-  const { slug = "elysium" } = useParams();
-  const nav = getAdminNav(slug);
+  const { slug } = useParams();
+  const nav = useMemo(() => getAdminNav(slug), [slug]);
 
   return (
     <AdminLayout title="Доступ" subtitle="Guild admins и роли доступа" nav={nav}>

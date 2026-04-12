@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import AdminLayout from "../../components/layout/AdminLayout";
 import { api } from "../../lib/api";
-import { getAdminNav } from "../../lib/admin";
 import { loginWithDiscord } from "../../lib/auth";
+import { getAdminNav } from "../../lib/admin";
 
 export default function AdminDashboardPage() {
   const { slug } = useParams();
-  const nav = getAdminNav(slug);
-
+  const nav = useMemo(() => getAdminNav(slug), [slug]);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
@@ -23,7 +22,11 @@ export default function AdminDashboardPage() {
       const payload = await api(`admin-nitrado-account?slug=${encodeURIComponent(slug)}`);
       setData(payload);
     } catch (err) {
-      setError(err.message || "Не удалось загрузить панель");
+      if (err?.status === 401) {
+        setError("Сначала войди как администратор через Discord и выбери сервер.");
+      } else {
+        setError(err.message || "Не удалось загрузить панель");
+      }
     } finally {
       setLoading(false);
     }
@@ -91,21 +94,26 @@ export default function AdminDashboardPage() {
 
   return (
     <AdminLayout title="Админка" subtitle={`Сервер: ${slug}`} nav={nav}>
+      <div className="mb-6 flex flex-wrap gap-3">
+        <Link to="/admin/select-server" className="rounded-xl border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-200 hover:bg-zinc-900">
+          Сменить Discord-сервер
+        </Link>
+        <Link to={`/admin/${slug}/economy`} className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500">
+          Открыть экономику
+        </Link>
+      </div>
+
       {loading ? <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6">Загрузка...</div> : null}
 
       {!loading && error ? <div className="mb-4 rounded-2xl border border-red-900 bg-red-950/50 p-4 text-red-200">{error}</div> : null}
 
-      {!loading && error === "Not logged in" ? (
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6">
-          <h2 className="text-xl font-semibold">Требуется вход через Discord</h2>
-          <p className="mt-2 text-sm text-zinc-400">
-            Админка теперь требует активную Discord-сессию. Сначала войди через Discord, потом открывай настройки сервера.
-          </p>
+      {!loading && error && error.includes('Discord') ? (
+        <div className="mb-6">
           <button
-            onClick={loginWithDiscord}
-            className="mt-4 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500"
+            onClick={() => loginWithDiscord('/admin/select-server')}
+            className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500"
           >
-            Войти через Discord
+            Войти как администратор через Discord
           </button>
         </div>
       ) : null}
@@ -115,8 +123,7 @@ export default function AdminDashboardPage() {
           <div>
             <h2 className="text-xl font-semibold">Подключение Nitrado вручную</h2>
             <p className="mt-2 text-sm text-zinc-400">
-              Вставь <span className="font-medium text-zinc-200">Service ID</span> и{" "}
-              <span className="font-medium text-zinc-200">API Token</span> от своего Nitrado аккаунта.
+              Вставь <span className="font-medium text-zinc-200">Service ID</span> и <span className="font-medium text-zinc-200">API Token</span> от своего Nitrado аккаунта.
               После проверки сайт сохранит подключение и начнет работать с этим сервером.
             </p>
           </div>
@@ -158,7 +165,7 @@ export default function AdminDashboardPage() {
         </div>
       ) : null}
 
-      {!loading && data?.connected ? (
+      {!loading && !error && data?.connected ? (
         <div className="space-y-6">
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">

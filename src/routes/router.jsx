@@ -23,6 +23,7 @@ import AdminItemEditPage from "../pages/admin/AdminItemEditPage";
 import AdminOrdersPage from "../pages/admin/AdminOrdersPage";
 import AdminMediaPage from "../pages/admin/AdminMediaPage";
 import AdminAccessPage from "../pages/admin/AdminAccessPage";
+import AdminSelectServerPage from "../pages/admin/AdminSelectServerPage";
 
 const router = createBrowserRouter([
   { path: "/", element: <LandingPage /> },
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
   { path: "/app/:slug/orders", element: <PlayerOrdersPage /> },
   { path: "/app/:slug/clan", element: <PlayerClanPage /> },
 
+  { path: "/admin/select-server", element: <AdminSelectServerPage /> },
   { path: "/admin/:slug", element: <AdminDashboardPage /> },
   { path: "/admin/:slug/economy", element: <AdminEconomyPage /> },
   { path: "/admin/:slug/settings", element: <AdminSettingsPage /> },

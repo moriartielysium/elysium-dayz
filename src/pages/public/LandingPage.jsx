@@ -61,14 +61,14 @@ export default function LandingPage() {
     <div className="flex items-center gap-3">
       <div className="hidden text-right sm:block">
         <div className="text-sm font-medium text-white">{me.user.global_name || me.user.username}</div>
-        <div className="text-xs text-zinc-400">{me.isSuperAdmin ? "Discord session" : "Игрок"}</div>
+        <div className="text-xs text-zinc-400">{me.isSuperAdmin ? "Discord session" : "Игрок / Админ"}</div>
       </div>
       <ActionButton secondary onClick={() => logout().then(() => window.location.reload())}>
         Выйти из Discord
       </ActionButton>
     </div>
   ) : (
-    <ActionButton onClick={loginWithDiscord}>Войти через Discord</ActionButton>
+    <ActionButton onClick={() => loginWithDiscord('/')}>Войти через Discord</ActionButton>
   );
 
   return (
@@ -78,10 +78,11 @@ export default function LandingPage() {
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6">
             <h2 className="mb-2 text-lg font-semibold">Игроки</h2>
             <p className="mb-4 text-sm text-zinc-400">
-              Discord-вход нужен только для игрокового кабинета, /link и персональной статистики.
+              Отдельный вход для обычных игроков. После Discord-входа игрок видит личный кабинет,
+              баланс, статистику, заказы и привязку через <code>/link</code>.
             </p>
             <div className="flex flex-wrap gap-3">
-              {!me?.user ? <ActionButton onClick={loginWithDiscord}>Войти через Discord</ActionButton> : null}
+              {!me?.user ? <ActionButton onClick={() => loginWithDiscord('/')}>Войти как игрок через Discord</ActionButton> : null}
               <ActionButton href={`/app/${primaryGuild.slug}`} secondary>
                 Кабинет игрока
               </ActionButton>
@@ -89,12 +90,20 @@ export default function LandingPage() {
           </div>
 
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6">
-            <h2 className="mb-2 text-lg font-semibold">Вход для администраторов</h2>
+            <h2 className="mb-2 text-lg font-semibold">Администраторы серверов</h2>
             <p className="mb-4 text-sm text-zinc-400">
-              Админка работает через Nitrado OAuth: входишь в свой Nitrado-аккаунт, предоставляешь доступ и сайт подгружает доступные игровые серверы.
+              Вход для владельцев Discord-серверов. После логина сайт покажет твои серверы,
+              затем ты выберешь нужный сервер, пригласишь туда бота и уже после этого
+              перейдёшь к настройке Nitrado, экономики и каналов.
             </p>
             <div className="flex flex-wrap gap-3">
-              <ActionButton href={`/admin/${primaryGuild.slug}`}>Открыть админку</ActionButton>
+              {!me?.user ? (
+                <ActionButton onClick={() => loginWithDiscord('/admin/select-server')}>
+                  Войти как администратор через Discord
+                </ActionButton>
+              ) : (
+                <ActionButton href="/admin/select-server">Выбрать Discord-сервер</ActionButton>
+              )}
               <ActionButton href={`/servers/${primaryGuild.slug}`} secondary>
                 Публичная страница
               </ActionButton>
@@ -106,7 +115,10 @@ export default function LandingPage() {
           <h3 className="mb-3 text-lg font-semibold">Доступные серверы</h3>
           {loading ? <div className="text-sm text-zinc-400">Загрузка...</div> : null}
           {!loading && !guilds.length ? (
-            <div className="text-sm text-zinc-400">Discord-серверы пока не определены автоматически. Для админки можно открыть основной slug: <code>/admin/elysium</code></div>
+            <div className="text-sm text-zinc-400">
+              Серверы для публичной части пока не определены автоматически. Для нового подключения
+              администратора используй кнопку выбора Discord-сервера выше.
+            </div>
           ) : null}
           {!!guilds.length ? (
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -118,7 +130,7 @@ export default function LandingPage() {
                     <ActionButton href={`/servers/${guild.slug}`} secondary>
                       Публичная страница
                     </ActionButton>
-                    <ActionButton href={`/admin/${guild.slug}`}>Админка</ActionButton>
+                    <ActionButton href={`/app/${guild.slug}`}>Кабинет</ActionButton>
                   </div>
                 </div>
               ))}

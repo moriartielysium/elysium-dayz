@@ -26,7 +26,10 @@ export async function api(path, options = {}) {
   const payload = contentType.includes('application/json') ? await response.json() : await response.text();
 
   if (!response.ok) {
-    throw new Error(payload?.detail || payload?.error || payload?.message || 'API request failed');
+    const error = new Error(payload?.detail || payload?.error || payload?.message || 'API request failed');
+    error.status = response.status;
+    error.payload = payload;
+    throw error;
   }
 
   return payload;
