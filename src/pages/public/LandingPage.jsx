@@ -27,7 +27,6 @@ export default function LandingPage() {
   const [me, setMe] = useState(null);
   const [guilds, setGuilds] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -62,11 +61,10 @@ export default function LandingPage() {
     <div className="flex items-center gap-3">
       <div className="hidden text-right sm:block">
         <div className="text-sm font-medium text-white">{me.user.global_name || me.user.username}</div>
-        <div className="text-xs text-zinc-400">{me.isSuperAdmin ? "Super-admin" : "Авторизован"}</div>
+        <div className="text-xs text-zinc-400">{me.isSuperAdmin ? "Discord session" : "Игрок"}</div>
       </div>
-      <ActionButton href={`/admin/${primaryGuild.slug}`}>Админка</ActionButton>
       <ActionButton secondary onClick={() => logout().then(() => window.location.reload())}>
-        Выйти
+        Выйти из Discord
       </ActionButton>
     </div>
   ) : (
@@ -78,23 +76,27 @@ export default function LandingPage() {
       <div className="space-y-6">
         <div className="grid gap-4 md:grid-cols-2">
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6">
-            <h2 className="mb-2 text-lg font-semibold">Вход через Discord</h2>
-            <p className="mb-4 text-sm text-zinc-400">После входа и /link игрок получает доступ к кабинету и магазину.</p>
+            <h2 className="mb-2 text-lg font-semibold">Игроки</h2>
+            <p className="mb-4 text-sm text-zinc-400">
+              Discord-вход нужен только для игрокового кабинета, /link и персональной статистики.
+            </p>
             <div className="flex flex-wrap gap-3">
               {!me?.user ? <ActionButton onClick={loginWithDiscord}>Войти через Discord</ActionButton> : null}
-              <ActionButton href={`/servers/${primaryGuild.slug}`} secondary>
-                Открыть сервер
+              <ActionButton href={`/app/${primaryGuild.slug}`} secondary>
+                Кабинет игрока
               </ActionButton>
             </div>
           </div>
 
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6">
-            <h2 className="mb-2 text-lg font-semibold">Мультисерверная архитектура</h2>
-            <p className="mb-4 text-sm text-zinc-400">Каждый Discord guild работает в своем контексте.</p>
+            <h2 className="mb-2 text-lg font-semibold">Вход для администраторов</h2>
+            <p className="mb-4 text-sm text-zinc-400">
+              Админка работает через Nitrado OAuth: входишь в свой Nitrado-аккаунт, предоставляешь доступ и сайт подгружает доступные игровые серверы.
+            </p>
             <div className="flex flex-wrap gap-3">
               <ActionButton href={`/admin/${primaryGuild.slug}`}>Открыть админку</ActionButton>
-              <ActionButton href={`/app/${primaryGuild.slug}`} secondary>
-                Кабинет игрока
+              <ActionButton href={`/servers/${primaryGuild.slug}`} secondary>
+                Публичная страница
               </ActionButton>
             </div>
           </div>
@@ -104,7 +106,7 @@ export default function LandingPage() {
           <h3 className="mb-3 text-lg font-semibold">Доступные серверы</h3>
           {loading ? <div className="text-sm text-zinc-400">Загрузка...</div> : null}
           {!loading && !guilds.length ? (
-            <div className="text-sm text-zinc-400">Пока серверы не определены автоматически. Можно открыть основной slug: <code>/admin/elysium</code></div>
+            <div className="text-sm text-zinc-400">Discord-серверы пока не определены автоматически. Для админки можно открыть основной slug: <code>/admin/elysium</code></div>
           ) : null}
           {!!guilds.length ? (
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -122,7 +124,6 @@ export default function LandingPage() {
               ))}
             </div>
           ) : null}
-          {error ? <div className="mt-3 text-sm text-red-300">{error}</div> : null}
         </div>
       </div>
     </PublicLayout>
