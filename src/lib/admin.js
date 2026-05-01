@@ -3,6 +3,7 @@ export function getAdminNav(slug) {
   return [
     { label: 'Dashboard', to: `/admin/${safeSlug}` },
     { label: 'Экономика', to: `/admin/${safeSlug}/economy` },
+    { label: 'Зоны', to: `/admin/${safeSlug}/zones` },
     { label: 'Настройки', to: `/admin/${safeSlug}/settings` },
     { label: 'Кланы', to: `/admin/${safeSlug}/clans` },
     { label: 'Категории', to: `/admin/${safeSlug}/categories` },

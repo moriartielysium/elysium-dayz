@@ -16,6 +16,7 @@ import PlayerClanPage from "../pages/app/PlayerClanPage";
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 import AdminEconomyPage from "../pages/admin/AdminEconomyPage";
 import AdminSettingsPage from "../pages/admin/AdminSettingsPage";
+import AdminZonesPage from "../pages/admin/AdminZonesPage";
 import AdminClansPage from "../pages/admin/AdminClansPage";
 import AdminCategoriesPage from "../pages/admin/AdminCategoriesPage";
 import AdminItemsPage from "../pages/admin/AdminItemsPage";
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
   { path: "/admin/select-server", element: <AdminSelectServerPage /> },
   { path: "/admin/:slug", element: <AdminDashboardPage /> },
   { path: "/admin/:slug/economy", element: <AdminEconomyPage /> },
+  { path: "/admin/:slug/zones", element: <AdminZonesPage /> },
   { path: "/admin/:slug/settings", element: <AdminSettingsPage /> },
   { path: "/admin/:slug/clans", element: <AdminClansPage /> },
   { path: "/admin/:slug/categories", element: <AdminCategoriesPage /> },
