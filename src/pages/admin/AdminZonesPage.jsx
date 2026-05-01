@@ -106,7 +106,7 @@ export default function AdminZonesPage() {
       } else if (err?.status === 403) {
         setError('У тебя нет доступа к управлению зонами этого Discord-сервера.');
       } else if (err?.status === 404 || err?.status === 405 || err?.status === 501) {
-        setError('Backend API зон не найден. Проверь, что app/routes/zones.py подключен в app/main.py и доступен через /api.');
+        setError('Backend API зон не найден. Проверь, что app/routes/zones.py подключен в app/main.py и backend отдаёт /api/zones или /zones через прокси сайта.');
       } else {
         setError(err?.message || 'Не удалось загрузить зоны');
       }
@@ -136,7 +136,7 @@ export default function AdminZonesPage() {
         } else if (err?.status === 403) {
           setError('У тебя нет доступа к управлению зонами этого Discord-сервера.');
         } else if (err?.status === 404 || err?.status === 405 || err?.status === 501) {
-          setError('Backend API зон не найден. Проверь, что app/routes/zones.py подключен в app/main.py и доступен через /api.');
+          setError('Backend API зон не найден. Проверь, что app/routes/zones.py подключен в app/main.py и backend отдаёт /api/zones или /zones через прокси сайта.');
         } else {
           setError(err?.message || 'Не удалось загрузить зоны');
         }

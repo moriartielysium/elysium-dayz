@@ -1,6 +1,13 @@
 import { api } from './api';
 
 const ZONE_ENDPOINTS = [
+  // FastAPI backend is usually mounted as /api/zones. Through Netlify /api/* proxy
+  // this must be requested as /api/api/zones, so the path below is intentional.
+  'api/zones',
+  'api/admin/zones',
+  'api/zone-control',
+  'api/zone-control/zones',
+  'api/zones/admin',
   'admin-zones',
   'admin/zones',
   'zone-control',
@@ -10,6 +17,10 @@ const ZONE_ENDPOINTS = [
 ];
 
 const SETTINGS_ENDPOINTS = [
+  'api/zones/settings',
+  'api/admin/zones/settings',
+  'api/zone-control/settings',
+  'api/zone-control/admin/settings',
   'admin-zones-settings',
   'admin/zones/settings',
   'zones/settings',
@@ -18,6 +29,10 @@ const SETTINGS_ENDPOINTS = [
 ];
 
 const EVENTS_ENDPOINTS = [
+  'api/zones/events',
+  'api/admin/zones/events',
+  'api/zone-control/events',
+  'api/zone-control/admin/events',
   'admin-zones-events',
   'admin/zones/events',
   'zones/events',
@@ -30,7 +45,8 @@ const VALIDATION_STATUSES = new Set([400, 422]);
 
 function withSlug(path, slug) {
   const joiner = path.includes('?') ? '&' : '?';
-  return `${path}${joiner}slug=${encodeURIComponent(slug || '')}`;
+  const safeSlug = encodeURIComponent(slug || '');
+  return `${path}${joiner}slug=${safeSlug}&guild_slug=${safeSlug}`;
 }
 
 function shouldTryNextEndpoint(error) {
