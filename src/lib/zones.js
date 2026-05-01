@@ -1,43 +1,36 @@
-import { api } from './api';
+import { api, botApi } from './api';
 
-const ZONE_ENDPOINTS = [
-  // FastAPI backend is usually mounted as /api/zones. Through Netlify /api/* proxy
-  // this must be requested as /api/api/zones, so the path below is intentional.
+const NETLIFY_ZONE_ENDPOINT = 'admin-zones';
+const NETLIFY_SETTINGS_ENDPOINT = 'admin-zones-settings';
+const NETLIFY_EVENTS_ENDPOINT = 'admin-zones-events';
+
+const BACKEND_ZONE_ENDPOINTS = [
   'api/zones',
   'api/admin/zones',
   'api/zone-control',
   'api/zone-control/zones',
-  'api/zones/admin',
-  'admin-zones',
+  'zones',
   'admin/zones',
   'zone-control',
   'zone-control/zones',
-  'zones/admin',
-  'zones',
 ];
 
-const SETTINGS_ENDPOINTS = [
+const BACKEND_SETTINGS_ENDPOINTS = [
   'api/zones/settings',
   'api/admin/zones/settings',
   'api/zone-control/settings',
-  'api/zone-control/admin/settings',
-  'admin-zones-settings',
-  'admin/zones/settings',
   'zones/settings',
+  'admin/zones/settings',
   'zone-control/settings',
-  'zone-control/admin/settings',
 ];
 
-const EVENTS_ENDPOINTS = [
+const BACKEND_EVENTS_ENDPOINTS = [
   'api/zones/events',
   'api/admin/zones/events',
   'api/zone-control/events',
-  'api/zone-control/admin/events',
-  'admin-zones-events',
-  'admin/zones/events',
   'zones/events',
+  'admin/zones/events',
   'zone-control/events',
-  'zone-control/admin/events',
 ];
 
 const ENDPOINT_NOT_FOUND_STATUSES = new Set([404, 405, 501]);
@@ -57,31 +50,25 @@ function shouldTryNextPayload(error) {
   return VALIDATION_STATUSES.has(Number(error?.status));
 }
 
-async function tryEndpoints(paths, options) {
+async function tryBackendEndpoints(paths, options) {
   let lastError;
-
   for (const path of paths) {
     try {
-      return await api(path, options);
+      return await botApi(path, options);
     } catch (error) {
       lastError = error;
       if (!shouldTryNextEndpoint(error)) break;
     }
   }
-
   throw lastError;
 }
 
-async function tryEndpointPayloads(paths, payloads, method = 'POST') {
+async function tryBackendPayloads(paths, payloads, method = 'POST') {
   let lastError;
-
   for (const path of paths) {
     for (const payload of payloads) {
       try {
-        return await api(path, {
-          method,
-          body: JSON.stringify(payload),
-        });
+        return await botApi(path, { method, body: JSON.stringify(payload) });
       } catch (error) {
         lastError = error;
         if (shouldTryNextEndpoint(error)) break;
@@ -90,7 +77,6 @@ async function tryEndpointPayloads(paths, payloads, method = 'POST') {
       }
     }
   }
-
   throw lastError;
 }
 
@@ -173,13 +159,19 @@ export function normalizeZonesPayload(payload = {}) {
 }
 
 export async function loadZonesAdmin(slug) {
-  const combinedPaths = ZONE_ENDPOINTS.map((endpoint) => withSlug(endpoint, slug));
-  const payload = await tryEndpoints(combinedPaths);
+  try {
+    const payload = await api(withSlug(NETLIFY_ZONE_ENDPOINT, slug));
+    return normalizeZonesPayload(payload);
+  } catch (error) {
+    if (!shouldTryNextEndpoint(error)) throw error;
+  }
+
+  const payload = await tryBackendEndpoints(BACKEND_ZONE_ENDPOINTS.map((endpoint) => withSlug(endpoint, slug)));
   const normalized = normalizeZonesPayload(payload);
 
   if (!payload?.settings && !payload?.config && !payload?.zoneSettings && !payload?.zone_settings) {
     try {
-      const settingsPayload = await tryEndpoints(SETTINGS_ENDPOINTS.map((endpoint) => withSlug(endpoint, slug)));
+      const settingsPayload = await tryBackendEndpoints(BACKEND_SETTINGS_ENDPOINTS.map((endpoint) => withSlug(endpoint, slug)));
       normalized.settings = normalizeSettings(settingsPayload?.settings || settingsPayload?.config || settingsPayload || {});
     } catch (error) {
       if (!shouldTryNextEndpoint(error)) throw error;
@@ -188,7 +180,7 @@ export async function loadZonesAdmin(slug) {
 
   if (!payload?.events && !payload?.recentEvents && !payload?.recent_events) {
     try {
-      const eventsPayload = await tryEndpoints(EVENTS_ENDPOINTS.map((endpoint) => withSlug(endpoint, slug)));
+      const eventsPayload = await tryBackendEndpoints(BACKEND_EVENTS_ENDPOINTS.map((endpoint) => withSlug(endpoint, slug)));
       const events = Array.isArray(eventsPayload)
         ? eventsPayload
         : firstDefined(eventsPayload?.events, eventsPayload?.items, eventsPayload?.data, []);
@@ -258,21 +250,44 @@ function settingsPayloads(slug, settings) {
 }
 
 export async function saveZoneSettings(slug, settings) {
-  return tryEndpointPayloads(SETTINGS_ENDPOINTS, settingsPayloads(slug, settings), 'POST');
+  const [payload] = settingsPayloads(slug, settings);
+  try {
+    return await api(NETLIFY_SETTINGS_ENDPOINT, { method: 'POST', body: JSON.stringify(payload) });
+  } catch (error) {
+    if (!shouldTryNextEndpoint(error)) throw error;
+  }
+  return tryBackendPayloads(BACKEND_SETTINGS_ENDPOINTS, settingsPayloads(slug, settings), 'POST');
 }
 
 export async function createZone(slug, form) {
-  return tryEndpointPayloads(ZONE_ENDPOINTS, zonePayloads(slug, form), 'POST');
+  const [payload] = zonePayloads(slug, form);
+  try {
+    return await api(NETLIFY_ZONE_ENDPOINT, { method: 'POST', body: JSON.stringify(payload) });
+  } catch (error) {
+    if (!shouldTryNextEndpoint(error)) throw error;
+  }
+  return tryBackendPayloads(BACKEND_ZONE_ENDPOINTS, zonePayloads(slug, form), 'POST');
 }
 
 export async function updateZone(slug, zoneId, form) {
   const safeId = encodeURIComponent(zoneId);
-  const paths = ZONE_ENDPOINTS.map((endpoint) => `${endpoint}/${safeId}`);
-  return tryEndpointPayloads(paths, zonePayloads(slug, form), 'PUT');
+  const [payload] = zonePayloads(slug, form);
+  try {
+    return await api(`${NETLIFY_ZONE_ENDPOINT}?id=${safeId}`, { method: 'PUT', body: JSON.stringify(payload) });
+  } catch (error) {
+    if (!shouldTryNextEndpoint(error)) throw error;
+  }
+  const paths = BACKEND_ZONE_ENDPOINTS.map((endpoint) => `${endpoint}/${safeId}`);
+  return tryBackendPayloads(paths, zonePayloads(slug, form), 'PUT');
 }
 
 export async function deleteZone(slug, zoneId) {
   const safeId = encodeURIComponent(zoneId);
-  const paths = ZONE_ENDPOINTS.map((endpoint) => `${endpoint}/${safeId}`);
-  return tryEndpointPayloads(paths, [{ slug }, { slug, id: zoneId }, { slug, zone_id: zoneId }], 'DELETE');
+  try {
+    return await api(`${NETLIFY_ZONE_ENDPOINT}?id=${safeId}`, { method: 'DELETE', body: JSON.stringify({ slug }) });
+  } catch (error) {
+    if (!shouldTryNextEndpoint(error)) throw error;
+  }
+  const paths = BACKEND_ZONE_ENDPOINTS.map((endpoint) => `${endpoint}/${safeId}`);
+  return tryBackendPayloads(paths, [{ slug }, { slug, id: zoneId }, { slug, zone_id: zoneId }], 'DELETE');
 }

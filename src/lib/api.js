@@ -1,22 +1,36 @@
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
+const RAW_API_BASE_URL = import.meta.env.VITE_ADMIN_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || '/.netlify/functions';
+const API_BASE_URL = (RAW_API_BASE_URL === '/api' ? '/.netlify/functions' : RAW_API_BASE_URL).replace(/\/$/, '');
+const BOT_API_BASE_URL = (import.meta.env.VITE_BOT_API_BASE_URL || '/api').replace(/\/$/, '');
 
 export function getApiBaseUrl() {
   return API_BASE_URL;
 }
 
-export function buildApiUrl(path = '') {
+export function getBotApiBaseUrl() {
+  return BOT_API_BASE_URL;
+}
+
+export function buildUrl(baseUrl, path = '') {
   const clean = String(path).replace(/^\/+/, '');
-  if (/^https?:\/\//i.test(API_BASE_URL)) {
-    return `${API_BASE_URL}/${clean}`;
-  }
-  return `${API_BASE_URL}/${clean}`.replace(/([^:]\/)(\/+)/g, '$1/');
+  if (!clean) return baseUrl || '/';
+  if (/^https?:\/\//i.test(clean)) return clean;
+  if (/^https?:\/\//i.test(baseUrl)) return `${baseUrl}/${clean}`;
+  return `${baseUrl}/${clean}`.replace(/([^:]\/)(\/+)/g, '$1/');
+}
+
+export function buildApiUrl(path = '') {
+  return buildUrl(API_BASE_URL, path);
+}
+
+export function buildBotApiUrl(path = '') {
+  return buildUrl(BOT_API_BASE_URL, path);
 }
 
 function isFormData(value) {
   return typeof FormData !== 'undefined' && value instanceof FormData;
 }
 
-export async function api(path, options = {}) {
+async function request(url, path, options = {}) {
   const { headers = {}, body, ...rest } = options;
   const finalHeaders = { ...headers };
 
@@ -24,7 +38,7 @@ export async function api(path, options = {}) {
     finalHeaders['Content-Type'] = 'application/json';
   }
 
-  const response = await fetch(buildApiUrl(path), {
+  const response = await fetch(url, {
     credentials: 'include',
     ...rest,
     headers: finalHeaders,
@@ -32,15 +46,24 @@ export async function api(path, options = {}) {
   });
 
   const contentType = response.headers.get('content-type') || '';
-  const payload = contentType.includes('application/json') ? await response.json() : await response.text();
+  const payload = contentType.includes('application/json') ? await response.json().catch(() => null) : await response.text().catch(() => '');
 
   if (!response.ok) {
-    const error = new Error(payload?.detail || payload?.error || payload?.message || 'API request failed');
+    const error = new Error(payload?.detail || payload?.error || payload?.message || `API request failed (${response.status})`);
     error.status = response.status;
     error.payload = payload;
     error.path = path;
+    error.url = url;
     throw error;
   }
 
   return payload;
+}
+
+export async function api(path, options = {}) {
+  return request(buildApiUrl(path), path, options);
+}
+
+export async function botApi(path, options = {}) {
+  return request(buildBotApiUrl(path), path, options);
 }
