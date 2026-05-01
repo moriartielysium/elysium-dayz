@@ -6,7 +6,7 @@ import { loginWithDiscord } from '../../lib/auth';
 import { getAdminNav } from '../../lib/admin';
 
 const EMPTY_SETTINGS = {
-  currencyName: 'Coins',
+  currencyName: '$',
   playtimeReward: 500,
   killReward: 0,
   statusChannelId: '',
@@ -154,7 +154,7 @@ export default function AdminEconomyPage() {
                   value={form.currencyName || ''}
                   onChange={(event) => setField('currencyName', event.target.value)}
                   className="rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-500"
-                  placeholder="Например: Rubles"
+                  placeholder="Например: $"
                 />
               </label>
 

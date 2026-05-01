@@ -4,6 +4,7 @@ import PlayerLayout from "../../components/layout/PlayerLayout";
 import LinkRequiredGate from "../../components/common/LinkRequiredGate";
 import { api } from "../../lib/api";
 import { getGuildNav, normalizeGuildSlug } from "../../lib/player";
+import { formatMoney } from "../../lib/format";
 
 function formatNumber(value) { return new Intl.NumberFormat("ru-RU").format(Number(value || 0)); }
 
@@ -56,7 +57,7 @@ export default function PlayerOrdersPage() {
                   <div className="font-semibold">{item.itemName || item.item_name || "Товар"}</div>
                   <div className="mt-1 text-sm text-zinc-400">Заказ #{item.id} · {item.status}</div>
                 </div>
-                <div className="text-right text-sm text-zinc-300">{formatNumber(item.pricePaid || item.price_paid)}</div>
+                <div className="text-right text-sm text-zinc-300">{formatMoney(item.pricePaid || item.price_paid, item.currencyName || state.data?.currencyName || state.data?.currency)}</div>
               </div>
               <div className="mt-2 text-xs text-zinc-500">Создан: {item.createdAt || item.created_at || "—"}</div>
             </div>

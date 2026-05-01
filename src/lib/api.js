@@ -10,8 +10,30 @@ export function getBotApiBaseUrl() {
   return BOT_API_BASE_URL;
 }
 
+
+function normalizeFunctionPath(path = '') {
+  const raw = String(path || '').replace(/^\/+/, '');
+  const queryIndex = raw.indexOf('?');
+  const pathname = queryIndex >= 0 ? raw.slice(0, queryIndex) : raw;
+  const query = queryIndex >= 0 ? raw.slice(queryIndex + 1) : '';
+  const aliases = {
+    'player/profile': 'player-profile',
+    'player/stats': 'player-stats',
+    'player/wallet': 'player-wallet',
+    'player/orders': 'player-orders',
+    'shop/categories': 'shop-categories',
+    'shop/items': 'shop-items',
+    'shop/item-details': 'shop-item-details',
+    'shop/order-create': 'shop-order-create',
+    'shop/order/create': 'shop-order-create',
+    'shop/buy': 'shop-order-create',
+  };
+  const mapped = aliases[pathname] || pathname;
+  return query ? `${mapped}?${query}` : mapped;
+}
+
 export function buildUrl(baseUrl, path = '') {
-  const clean = String(path).replace(/^\/+/, '');
+  const clean = normalizeFunctionPath(path);
   if (!clean) return baseUrl || '/';
   if (/^https?:\/\//i.test(clean)) return clean;
   if (/^https?:\/\//i.test(baseUrl)) return `${baseUrl}/${clean}`;

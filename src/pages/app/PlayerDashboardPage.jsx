@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import PlayerLayout from "../../components/layout/PlayerLayout";
 import { api } from "../../lib/api";
 import { getGuildNav, normalizeGuildSlug } from "../../lib/player";
+import { formatMoney } from "../../lib/format";
 
 function StatCard({ title, value, subtitle }) {
   return (
@@ -69,6 +70,7 @@ export default function PlayerDashboardPage() {
       : 0;
 
   const balance = wallet?.balance ?? wallet?.wallet?.balance ?? 0;
+  const currencyName = wallet?.currencyName || wallet?.currency || profile?.currencyName || profile?.currency || "$";
 
   return (
     <PlayerLayout
@@ -90,7 +92,7 @@ export default function PlayerDashboardPage() {
       {error ? <div style={styles.error}>{error}</div> : null}
 
       <div style={styles.grid}>
-        <StatCard title="Баланс" value={balance} subtitle="Игровая валюта" />
+        <StatCard title="Баланс" value={formatMoney(balance, currencyName)} subtitle="Игровая валюта" />
         <StatCard title="Киллы" value={stats?.kills ?? 0} subtitle={`K/D ${kd}`} />
         <StatCard title="Смерти" value={stats?.deaths ?? 0} subtitle={`Урон ${stats?.damage ?? 0}`} />
         <StatCard title="Заказы" value={totalOrders} subtitle={profile?.psnName || profile?.psn_name ? `PSN ${profile?.psnName || profile?.psn_name}` : "Привяжи аккаунт через /link"} />
