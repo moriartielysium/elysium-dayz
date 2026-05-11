@@ -1,1 +1,90 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="ELYSIUM DAYZ — пополнение внутреннего баланса Discord-сообщества."><meta name="robots" content="index,follow"><title>Пополнение баланса — ELYSIUM DAYZ</title><link rel="stylesheet" href="/assets/styles.css"></head><body><header class="top"><div class="wrap nav"><a class="brand" href="/"><div class="logo">EB</div><div><strong>ELYSIUM DAYZ</strong><span>Внутренний баланс Discord-сообщества</span></div></a><nav class="links"><a href="/donate/">Пополнение</a><a href="/oferta/">Оферта</a><a href="/refund/">Возврат</a><a href="/contacts/">Контакты</a><a class="btn red" href="/donate/">Пакеты</a></nav></div></header><main><div class="wrap"><section class="section-title"><div class="eyebrow">Пополнение</div><h1>Пакеты внутреннего баланса</h1><p class="lead">Выберите пакет в Discord-сообществе ELYSIUM DAYZ. После подключения Robokassa игрок получает платёжную ссылку, а начисление выполняется автоматически после подтверждения оплаты.</p></section><section class="grid4 packages"><div class="card"><div class="eyebrow">Стартовый пакет</div><div class="price">100 ₽</div><div class="balance">10 000 $ баланса</div><p>Начисление производится на Discord-аккаунт игрока, который оформил заказ в боте.</p></div><div class="card"><div class="eyebrow">Популярный пакет</div><div class="price">250 ₽</div><div class="balance">30 000 $ баланса</div><p>Подходит для обычного пополнения внутреннего баланса проекта.</p></div><div class="card popular"><div class="eyebrow">Лучший выбор</div><div class="price">500 ₽</div><div class="balance">70 000 $ баланса</div><p>Увеличенный пакет для активных участников сообщества.</p></div><div class="card"><div class="eyebrow">Максимальный пакет</div><div class="price">1000 ₽</div><div class="balance">160 000 $ баланса</div><p>Крупное пополнение внутреннего баланса Discord-сообщества.</p></div></section><section class="grid2" style="margin-top:36px"><div class="card"><h2>Как использовать</h2><ol><li>Зайдите на Discord-сервер ELYSIUM DAYZ.</li><li>Откройте команду или раздел пополнения у бота.</li><li>Выберите пакет и перейдите по платёжной ссылке.</li><li>После успешной оплаты дождитесь сообщения от бота о начислении.</li></ol></div><div class="card"><h2>Технические страницы оплаты</h2><div class="kv"><div><strong>Success URL:</strong> <span class="code">https://elysium-dayz.ru/pay/success</span></div><div><strong>Fail URL:</strong> <span class="code">https://elysium-dayz.ru/pay/fail</span></div><div><strong>Result URL:</strong> <span class="code">https://elysium-dayz.ru/pay/result</span></div></div><p style="color:#ffe2a2">Result URL должен быть подключён к backend-обработчику оплаты перед запуском реальных платежей.</p></div></section></div></main><footer class="footer"><div class="wrap"><div>© <span data-year></span> ELYSIUM DAYZ. Внутренний баланс не является денежными средствами.</div><div><a href="/privacy/">Политика</a><a href="/terms/">Соглашение</a><a href="/contacts/">Контакты</a></div></div></footer><script src="/assets/site.js"></script></body></html>
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="ELYSIUM DAYZ — пополнение внутреннего баланса Discord-сообщества.">
+  <meta name="robots" content="index,follow">
+  <title>Пополнение баланса — ELYSIUM DAYZ</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap nav">
+    <a class="brand" href="/">
+      <div class="logo">EB</div>
+      <div><strong>ELYSIUM DAYZ</strong><span>Внутренний баланс Discord-сообщества</span></div>
+    </a>
+    <nav class="links">
+      <a href="/donate/">Пополнение</a><a href="/oferta/">Оферта</a><a href="/refund/">Возврат</a><a href="/contacts/">Контакты</a><a class="btn red" href="/donate/">Пакеты</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <div class="wrap">
+    <section class="section-title">
+      <div class="eyebrow">Пополнение</div>
+      <h1>Пакеты внутреннего баланса</h1>
+      <p class="lead">Выберите пакет. Сайт создаст заказ через backend, откроет Robokassa, а после подтверждения оплаты валюта автоматически начислится на Discord-аккаунт игрока.</p>
+      <div data-payment-status class="payment-status"></div>
+    </section>
+
+    <section class="grid4 packages">
+      <div class="card">
+        <div class="eyebrow">Стартовый пакет</div>
+        <div class="price">100 ₽</div>
+        <div class="balance">10 000 $ баланса</div>
+        <p>Начисление производится на Discord-аккаунт игрока, который оформил заказ.</p>
+        <div class="package-actions"><button class="btn red" data-pay-package="100">Оплатить</button></div>
+      </div>
+      <div class="card">
+        <div class="eyebrow">Популярный пакет</div>
+        <div class="price">250 ₽</div>
+        <div class="balance">30 000 $ баланса</div>
+        <p>Подходит для обычного пополнения внутреннего баланса проекта.</p>
+        <div class="package-actions"><button class="btn red" data-pay-package="250">Оплатить</button></div>
+      </div>
+      <div class="card popular">
+        <div class="eyebrow">Лучший выбор</div>
+        <div class="price">500 ₽</div>
+        <div class="balance">70 000 $ баланса</div>
+        <p>Увеличенный пакет для активных участников сообщества.</p>
+        <div class="package-actions"><button class="btn red" data-pay-package="500">Оплатить</button></div>
+      </div>
+      <div class="card">
+        <div class="eyebrow">Максимальный пакет</div>
+        <div class="price">1000 ₽</div>
+        <div class="balance">160 000 $ баланса</div>
+        <p>Крупное пополнение внутреннего баланса Discord-сообщества.</p>
+        <div class="package-actions"><button class="btn red" data-pay-package="1000">Оплатить</button></div>
+      </div>
+    </section>
+
+    <section class="grid2" style="margin-top:36px">
+      <div class="card">
+        <h2>Как использовать</h2>
+        <ol>
+          <li>Войдите на сайте через Discord, если backend попросит авторизацию.</li>
+          <li>Убедитесь, что у вас привязан PSN через команду <span class="code">/link</span> в Discord.</li>
+          <li>Выберите пакет и перейдите по платёжной ссылке Robokassa.</li>
+          <li>После успешной оплаты дождитесь автоматического начисления.</li>
+        </ol>
+        <p class="small-note">Также можно пополнять баланс прямо в Discord командой <span class="code">/donate</span>.</p>
+      </div>
+      <div class="card">
+        <h2>Технические страницы оплаты</h2>
+        <div class="kv">
+          <div><strong>Success URL:</strong> <span class="code">https://elysium-dayz.site/pay/success/</span></div>
+          <div><strong>Fail URL:</strong> <span class="code">https://elysium-dayz.site/pay/fail/</span></div>
+          <div><strong>Result URL:</strong> <span class="code">https://api.elysium-dayz.site/payments/robokassa/result</span></div>
+        </div>
+        <p style="color:#ffe2a2">Result URL должен вести на FastAPI backend, а не на статическую страницу Netlify.</p>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="footer"><div class="wrap"><div>© <span data-year></span> ELYSIUM DAYZ. Внутренний баланс не является денежными средствами.</div><div><a href="/privacy/">Политика</a><a href="/terms/">Соглашение</a><a href="/contacts/">Контакты</a></div></div></footer>
+<script src="/assets/config.js"></script>
+<script src="/assets/site.js"></script>
+</body>
+</html>
