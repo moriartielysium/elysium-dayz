@@ -1,6 +1,6 @@
 {
-  "name": "elysium-web",
-  "version": "2.0.0",
+  "name": "elysium-dayz-robokassa-site",
+  "version": "3.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,19 +9,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "clsx": "^2.1.1",
-    "cookie": "^1.0.2",
-    "mysql2": "^3.11.3",
+    "@vitejs/plugin-react": "^4.3.3",
+    "vite": "^5.4.10",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.28.0",
-    "zustand": "^5.0.1"
+    "react-router-dom": "^6.28.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.3",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
-    "tailwindcss": "^3.4.14",
-    "vite": "^5.4.10"
+    "tailwindcss": "^3.4.14"
   }
 }
